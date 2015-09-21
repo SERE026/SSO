@@ -35,48 +35,35 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 		String uri = request.getRequestURI();
 		String uriPrefix = request.getContextPath();
 		
-		String ticket = request.getParameter(Constants.JVMCACHE_KEY);
-		if(ticket == null || "".equals(ticket)){
-			Cookie[] cookies = request.getCookies(); // 读取cookie
-			if (cookies != null) {
-				for (Cookie cookie : cookies) {
-					if (Constants.JVMCACHE_KEY.equals(cookie.getName())) {
-						ticket = cookie.getValue();
-						cookie.setMaxAge(Constants.EXPIRETIME.intValue());
-//						cookie.setHttpOnly(true);
-						cookie.setPath("/");
-						response.addCookie(cookie);
-					}
-				}
-			}
-		}
+		//使用JSESSIONID 来保存会话，模拟tomcat 的session实现
+		String JSESSIONID = request.getSession().getId();
+		
+		User user = userService.queryUserByKey(JSESSIONID);
+		
 		if(uri.equals("/") || StringUtils.startsWith(uri,uriPrefix+"/js/") 
 				|| StringUtils.startsWith(uri,uriPrefix+"/images/")
 				|| StringUtils.startsWith(uri,uriPrefix+"/css/")
 				|| StringUtils.startsWith(uri,uriPrefix+"/servlet/")
 				|| StringUtils.startsWith(uri,uriPrefix+"/unck/")
 				|| StringUtils.startsWith(uri,uriPrefix+"/login")
-				|| StringUtils.startsWith(uri,uriPrefix+"/p")
+				|| StringUtils.startsWith(uri,uriPrefix+"/p/")
 				|| StringUtils.startsWith(uri,uriPrefix+"/register"))
 		{
-			System.out.println("OK");
+			LOG.info("拦截器直接放过的地址：{}",uri);
 		}
 		else
 		{
-			
-			
-			User user = null ;
-			if(ticket != null && !"".equals(ticket)) user = userService.queryUserByKey(ticket);
 			
 			if(user ==null)
 			{
 
 				
 				LOG.info("请求参数：>>> "+request.getQueryString());
+				
 		        Map<String, String[]> params = request.getParameterMap();  
 		        String queryString = "?";
 		        
-		        if(ticket != null && !"".equals(ticket)) queryString+="ticket="+ticket+"&" ;
+		        if(StringUtils.isNotBlank(JSESSIONID)) queryString+="ticket="+JSESSIONID+"&" ;
 		        
 		        for (String key : params.keySet()) {  
 		            String[] values = params.get(key);  
@@ -97,12 +84,13 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 				backurl = all.substring(0,index)+backurl+queryString;
 				backurl=URLEncoder.encode(backurl, "utf-8");
 				
-				response.sendRedirect(uriPrefix+"/login?service="+backurl);
+//				response.sendRedirect(uriPrefix+"/login?service="+backurl);
+				response.sendRedirect(uriPrefix+"/login");
 				
 				return false;
 			}
 		}
-		if(StringUtils.isNotBlank(ticket)) userService.expire(ticket, Constants.EXPIRETIME);
+		if(user != null) userService.expire(JSESSIONID, Constants.EXPIRETIME);
 		return true;
 	}
 

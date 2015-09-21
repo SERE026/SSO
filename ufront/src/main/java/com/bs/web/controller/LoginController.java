@@ -19,27 +19,10 @@ public class LoginController {
 	@Autowired
 	private UserService userService ;
 	
-	@RequestMapping("/p/login")
+	@RequestMapping("/login")
 	public String login(HttpServletRequest request,HttpServletResponse response,Model model){
-		
-		/*String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		String ticket = request.getParameter(Constants.JVMCACHE_KEY);
-		String jsessionId = request.getParameter("jsessionid");
-		
-		if(username == null || "".equals(username) 
-				|| password == null || "".equals(password)){
-			model.addAttribute("message","用户名或者密码为空，请输入！");
-			return "login";
-		}
-		if(ticket == null || "".equals(ticket)) ticket = jsessionId;
-		User user = userService.queryUserByKey(ticket);
-		
-		if(user == null )  user = userService.queryUserByOther(username);
-		
-		*/
 		 
-		return "index";
+		return "login";
 	}
 	
 	
@@ -50,5 +33,11 @@ public class LoginController {
 		
 		
 		return "";
+	}
+	
+	@RequestMapping("/account")
+	public String account(HttpServletRequest request,HttpServletResponse response,Model model){
+		 
+		return "account/account";
 	}
 }

@@ -41,53 +41,11 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 		String uri = request.getRequestURI();
 		String uriPrefix = request.getContextPath();
 		
-		String tkey = request.getParameter("ticket");
-		
-		Cookie[] cookies = request.getCookies(); // 读取cookie
-		String tmpkey = "";
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (Constants.JVMCACHE_KEY.equals(cookie.getName())) {
-					tmpkey = cookie.getValue();
-					cookie.setMaxAge(Constants.EXPIRETIME.intValue());
-//					cookie.setHttpOnly(true);
-					cookie.setPath("/");
-					response.addCookie(cookie);
-				}
-			}
-		}
-		
-		if(!StringUtils.isNotBlank(tkey) && StringUtils.isNotBlank(tmpkey)){
-			tkey = tmpkey;
-			Cookie cookie = new Cookie(Constants.JVMCACHE_KEY,tkey);
-			cookie.setMaxAge(Constants.EXPIRETIME.intValue());
-//			cookie.setHttpOnly(true);
-			cookie.setPath("/");
-			response.addCookie(cookie);
-		}
-		
-		if(StringUtils.isNotBlank(tkey) ){
-			Cookie cookie = new Cookie(Constants.JVMCACHE_KEY,tkey);
-			cookie.setMaxAge(Constants.EXPIRETIME.intValue());
-//				cookie.setHttpOnly(true);
-			cookie.setPath("/");
-			response.addCookie(cookie);
-			
-			/*//同步到用户中心cookie
-			HttpClient client = HttpClientUtils.getConnection();
-			Map map = new ConcurrentHashMap();
-			map.put(Constants.JVMCACHE_KEY, tkey);
-	        HttpUriRequest post = 	HttpClientUtils.getRequestMethod1(map, "http://www.web2.com:9080/ticket", "get");
-//	        post.setHeader(Constants.JVMCACHE_KEY, tkey);
-	        HttpResponse resp = client.execute(post);
-	        
-	        System.out.println(resp.getStatusLine().getStatusCode());
-	        if(resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
-	        	System.out.println("OK");
-	        }else{
-	        	System.out.println("失败");
-	        }*/
-		}
+		String JSESSIONID = request.getSession().getId();
+		/**
+		 *  缓存中查询
+		 */
+		User user = userService.queryUserByKey(JSESSIONID);
 		
 		if(uri.equals("/") || StringUtils.startsWith(uri,uriPrefix+"/js/") 
 				|| StringUtils.startsWith(uri,uriPrefix+"/images/")
@@ -98,21 +56,17 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 				|| StringUtils.startsWith(uri,uriPrefix+"/p")
 				|| StringUtils.startsWith(uri,uriPrefix+"/register"))
 		{
-			
+			LOG.info("不经过拦截器处理的url地址：{}",uri);
 		}
 		else
 		{
 			
-			
-			User user = null ;
-			if(tkey != null && !"".equals(tkey)) user = userService.queryUserByKey(tkey);
-			
 			if(user ==null)
 			{
-
 				
 				LOG.info("请求参数：>>> "+request.getQueryString());
-		        Map<String, String[]> params = request.getParameterMap();  
+		        Map<String, String[]> params = request.getParameterMap();
+		        
 		        String queryString = "?";  
 		        for (String key : params.keySet()) {  
 		            String[] values = params.get(key);  
@@ -131,14 +85,15 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 				backurl = all.substring(0,index)+backurl+queryString;
 				backurl=URLEncoder.encode(backurl, "utf-8");
 				
-				response.sendRedirect(Global.getConfig(Constants.SSOURL)+"?service="+backurl);
+				//response.sendRedirect(Global.getConfig(Constants.SSOURL)+"?service="+backurl);
+				response.sendRedirect(uriPrefix+"/login");
 				
 				return false;
 			}	
 		}
 		
-		//TODO 更新用户在缓存中的值
-		if(StringUtils.isNotBlank(tkey)) userService.expire(tkey, Constants.EXPIRETIME);
+		//  更新用户在缓存中的值
+		if(user !=null ) userService.expire(JSESSIONID, Constants.EXPIRETIME);
 		return true;
 	}
 

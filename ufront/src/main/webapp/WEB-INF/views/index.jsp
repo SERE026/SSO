@@ -24,30 +24,4 @@
 	</div>
   </body>
 </html>
-<iframe id="myframe" width="100%" frameBorder="0" src="http://www.web2.com:9080/ticket" scrolling="no">
-
-</iframe>
  
-<script type="text/javascript">
-
-	
-	function valTicket(){
-		/** $.ajax({
-			  type:"post", 
-			  url:"http://www.web2.com:9080/ticket",
-			  cache:false,
-			  data:{ 
-				  inviteCode:top_inviteCode
-			   },
-			  dataType:"text",
-			  success:function(data){
-			  }
-		});
-		**/
-	}
-	
-	valTicket();
-
-
-
-</script>

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bs.api.modle.Constants;
 import com.bs.api.modle.User;
@@ -43,65 +44,54 @@ public class LoginController {
 	 * 完全跨域名单点登录
 	 * 
 	 * */
+	@ResponseBody
 	@RequestMapping("/login/submit")
-	public void login(HttpServletRequest request, HttpServletResponse response)
+	public String login(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		
+
 		String uriPrefix = request.getContextPath();
-		
+
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		String service = request.getParameter("service");
-		String ticket = "";
-		//TODO 此处用户名密码从缓存中获取，如果缓存中没有从关系型数据库获取
-		User user = null ;
-		Cookie[] cookies = request.getCookies(); // 读取cookie
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (Constants.JVMCACHE_KEY.equals(cookie.getName())) {
-					ticket = cookie.getValue();
-				}
-			}
-		}
-		if(ticket != null && !"".equals(ticket))  user = userService.queryUserByKey(ticket);
-		
-		if(user == null){
-			user = userService.queryUserByOther(username);
-		}
-		
-		if (user !=null 
-				&& user.getName().equals(username) 
-				&& user.getPassword().equals(password)) {
-			
-			
+		// String service = request.getParameter("service");
 
-			//TODO 此处把用户信息存入缓存 ：redis 或者memcache*/
-			if(ticket == null || "".equals(ticket)) ticket = UUID.randomUUID().toString();
-			
-			Cookie cookie = new Cookie(Constants.JVMCACHE_KEY, ticket);
-			cookie.setMaxAge(Constants.EXPIRETIME.intValue());
-			cookie.setPath("/");
-//			cookie.setHttpOnly(true);
-			response.addCookie(cookie);
-			
-			System.out.println("ticket:> "+ticket);
-			userService.set(user, ticket);
-			userService.expire(ticket, Constants.EXPIRETIME);
-			
-	        
-			if (null != service) {
-				response.sendRedirect(service+"?ticket="+ticket);
-				return ;
+		String service = request.getHeader("Referer");
+
+		String JSESSIONID = request.getSession().getId();
+		/***
+		 * 1. 此处用户名密码从缓存中获取， 2. 如果缓存中没有从关系型数据库获取
+		 **/
+		User user = null;
+		if (JSESSIONID != null && !"".equals(JSESSIONID))
+			user = userService.queryUserByKey(JSESSIONID); // 1.此处用户名密码从缓存中获取，
+
+		if (user == null) {
+			user = userService.queryUserByOther(username); // 2.缓存中没有从关系型数据库获取
+		}
+
+		if (user != null && user.getName().equals(username)
+				&& user.getPassword().equals(password)) {
+
+			// TODO 此处把用户信息存入缓存 ：redis 或者memcache*/
+			userService.set(user, JSESSIONID);
+			userService.expire(JSESSIONID, Constants.EXPIRETIME);
+
+			/*if (null != service) {
+				 response.sendRedirect(service); //非json模式 
+				 return ;
 			} else {
-				//跳转到用户中心系统
-				response.sendRedirect("/index");
-			}
+				//跳转到用户中心系统 
+				//response.sendRedirect("/index"); //非json模式
+			}*/
+			return "success";
 		} else {
-			//直接在登录地址提示错误信息
-			response.sendRedirect(uriPrefix+"/login?"+request.getQueryString());
+			/*
+			 * // 直接在登录地址提示错误信息  
+			 * response.sendRedirect(uriPrefix+"/login?"+request.getQueryString()); //非json模式
+			 */
+			return "error";
 		}
 	}
-	
 	
 	
 	/**

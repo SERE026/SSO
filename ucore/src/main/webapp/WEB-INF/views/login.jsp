@@ -13,21 +13,24 @@
       <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script type="text/javascript" src="/js/jquery.min.js"/>
+    <script type="text/javascript" src="/js/comm/login4Req.js?version=<%= Math.random() %>"/>
   </head>
   <body>
  	<div>
-		<form action="/login/submit">
 		username:<input type="text" name="username" >
 		<br>
 		
 		password:<input type="text" name="password" >
-		<input type="text" name="service" value="${service }">
-<%-- 		<input type="text" name="service1" value="${params.service }"> --%>
 		<br>
 		
-		<input type="submit"  >
+		<input type="button" id="submitBtn">
 		
-		</form>	
 	</div>
   </body>
+  <script type="text/javascript">
+	  $(document).ready(function(){
+	  	 login($("submitBtn"),$submitUrl,$queryListUrl,$(".username").val(),$(".password").val());
+	  })
+  </script>
 </html>
