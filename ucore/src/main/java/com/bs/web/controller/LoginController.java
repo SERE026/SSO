@@ -1,15 +1,15 @@
 package com.bs.web.controller;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,14 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bs.api.modle.Constants;
 import com.bs.api.modle.User;
 import com.bs.api.service.UserService;
-import com.bs.web.cache.JVMCache;
 
 @Controller
 public class LoginController {
 	
-	
-	public static final String USERNAME = "cloud" ;
-	public static final String PASSWORD = "cloud";
 	
 	@Autowired
 	private UserService userService;
@@ -56,6 +52,7 @@ public class LoginController {
 		// String service = request.getParameter("service");
 
 		String service = request.getHeader("Referer");
+		String jsonpCallback = request.getParameter("jsonpCallback");
 
 		String JSESSIONID = request.getSession().getId();
 		/***
@@ -83,78 +80,29 @@ public class LoginController {
 				//跳转到用户中心系统 
 				//response.sendRedirect("/index"); //非json模式
 			}*/
-			return "success";
+			return jsonpCallback+"("+loginJsonUrl("success")+")";
 		} else {
 			/*
 			 * // 直接在登录地址提示错误信息  
 			 * response.sendRedirect(uriPrefix+"/login?"+request.getQueryString()); //非json模式
 			 */
-			return "error";
+			return jsonpCallback+"("+loginJsonUrl("error")+")";
 		}
 	}
 	
 	
-	/**
-	 * 子域名单点登录
-	 * 
-	 * */
-	@RequestMapping("/login/submit1")
-	public void login1(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		
-		String uriPrefix = request.getContextPath();
-		
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		String service = request.getParameter("service");
-		String ticket = "";
-		//TODO 此处用户名密码从缓存中获取，如果缓存中没有从关系型数据库获取
-		User user = null ;
-		Cookie[] cookies = request.getCookies(); // 读取cookie
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (Constants.JVMCACHE_KEY.equals(cookie.getName())) {
-					ticket = cookie.getValue();
-				}
-			}
+	public String loginJsonUrl(String type){
+		List<String> list = new ArrayList<String>(1);
+		JSONObject json = new JSONObject();
+		if("success".equals(type)){
+			list.add("www.web1.com:9081");
+	//		list.add("www.web2.com");
+			list.add("www.passport.com:9080");
+			json.put("listUrl", list);
+		}else{
+			json.put("listUrl", "");
 		}
-		if(ticket != null && !"".equals(ticket))  user = userService.queryUserByKey(ticket);
-		
-		if(user == null){
-			user = userService.queryUserByOther(username);
-		}
-		
-		if (user !=null 
-				&& user.getName().equals(username) 
-				&& user.getPassword().equals(password)) {
-			
-			
-
-			//TODO 此处把用户信息存入缓存 ：redis 或者memcache*/
-			if(ticket == null || "".equals(ticket)) ticket = UUID.randomUUID().toString();
-			
-			Cookie cookie = new Cookie(Constants.JVMCACHE_KEY, ticket);
-			cookie.setMaxAge(Constants.EXPIRETIME.intValue());
-			cookie.setPath("/");
-//			cookie.setHttpOnly(true);
-			cookie.setDomain(".wjw.com");
-			response.addCookie(cookie);
-			
-			System.out.println("ticket:> "+ticket);
-			userService.set(user, ticket);
-			userService.expire(ticket, Constants.EXPIRETIME);
-			
-	        
-			if (null != service) {
-				response.sendRedirect(service);
-				return ;
-			} else {
-				//跳转到用户中心系统
-				response.sendRedirect("/index");
-			}
-		} else {
-			//直接在登录地址提示错误信息
-			response.sendRedirect(uriPrefix+"/login?"+request.getQueryString());
-		}
+		return json.toString();
 	}
+	
 }

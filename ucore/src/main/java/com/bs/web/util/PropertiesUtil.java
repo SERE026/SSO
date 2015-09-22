@@ -13,8 +13,6 @@ public class PropertiesUtil implements Serializable {
 
 	public final static String location = "/id5sms.properties";
 	
-	//营销账号：2001285密码g*39AZC%
-	//通知账号200277密码U!#7FBj5
 	
 	public static Properties prop =  new  Properties();    
     static  {    
