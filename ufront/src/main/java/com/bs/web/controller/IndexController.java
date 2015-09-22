@@ -16,5 +16,12 @@ public class IndexController {
 		return "index";
 	}
 	
+	/**
+	 * 首页测试
+	 */
+	@RequestMapping("/")
+	public String first(HttpServletRequest request){
+		return "index";
+	}
 	
 }

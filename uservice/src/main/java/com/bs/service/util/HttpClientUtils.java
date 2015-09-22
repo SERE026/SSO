@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.Cookie;
+//import javax.servlet.http.Cookie;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -110,8 +110,8 @@ public class HttpClientUtils {
                     /*.addParameters(params.toArray(new BasicNameValuePair[params.size()]))*/
                     .setConfig(requestConfig).build();
         }
-        Cookie cookie = new Cookie(Constants.JVMCACHE_KEY,  map.get(Constants.JVMCACHE_KEY));
-        reqMethod.addHeader(new BasicHeader("Set-Cookie",map.get(Constants.JVMCACHE_KEY)));
+//        Cookie cookie = new Cookie(Constants.JVMCACHE_KEY,  map.get(Constants.JVMCACHE_KEY));
+        reqMethod.addHeader(new BasicHeader("Set-Cookie",map.get(Constants.CACHE_COOKIE_KEY)));
 //        reqMethod.setHeader(Constants.JVMCACHE_KEY, map.get(Constants.JVMCACHE_KEY));
         return reqMethod;
     }

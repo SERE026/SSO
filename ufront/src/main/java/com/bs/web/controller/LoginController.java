@@ -26,15 +26,6 @@ public class LoginController {
 	}
 	
 	
-	
-	@ResponseBody
-	@RequestMapping("/user/list")
-	public String  test(HttpServletRequest request,HttpServletResponse response,Model model){
-		
-		
-		return "";
-	}
-	
 	@RequestMapping("/account")
 	public String account(HttpServletRequest request,HttpServletResponse response,Model model){
 		 

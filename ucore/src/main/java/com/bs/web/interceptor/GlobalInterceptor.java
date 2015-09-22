@@ -1,8 +1,5 @@
 package com.bs.web.interceptor;
 
-import java.net.URLEncoder;
-import java.util.Map;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +33,12 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 		String uriPrefix = request.getContextPath();
 		
 		//使用JSESSIONID 来保存会话，模拟tomcat 的session实现
-		String JSESSIONID = request.getSession().getId();
+		String JSESSIONID = request.getParameter(Constants.CACHE_COOKIE_KEY);  //此处需要验签
+		
+		if(StringUtils.isBlank(JSESSIONID)) JSESSIONID = getJSessionId(request);
+		
+		//客户端存储cookie
+		addCookie(request,response,JSESSIONID);
 		
 		User user = userService.queryUserByKey(JSESSIONID);
 		
@@ -56,42 +58,49 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 			
 			if(user ==null)
 			{
-
-				
-				LOG.info("请求参数：>>> "+request.getQueryString());
-				
-		        Map<String, String[]> params = request.getParameterMap();  
-		        String queryString = "?";
-		        
-		        if(StringUtils.isNotBlank(JSESSIONID)) queryString+="ticket="+JSESSIONID+"&" ;
-		        
-		        for (String key : params.keySet()) {  
-		            String[] values = params.get(key);  
-		            for (int i = 0; i < values.length; i++) {  
-		                String value = values[i];  
-		                queryString += key + "=" + value + "&";  
-		            }  
-		        }
-		        
-		        // 去掉最后一个空格  
-		        queryString = queryString.substring(0, queryString.length() - 1);  
-				
-				
-				StringBuffer all=request.getRequestURL();
-				int index=all.indexOf(uri);
-				String backurl=request.getRequestURI();
-				//回调地址
-				backurl = all.substring(0,index)+backurl+queryString;
-				backurl=URLEncoder.encode(backurl, "utf-8");
-				
-//				response.sendRedirect(uriPrefix+"/login?service="+backurl);
 				response.sendRedirect(uriPrefix+"/login");
-				
 				return false;
 			}
 		}
 		if(user != null) userService.expire(JSESSIONID, Constants.EXPIRETIME);
 		return true;
+	}
+
+	/**
+	 * 取cookie中的SessionId
+	 * @param request
+	 * @param JSESSIONID
+	 */
+	private String getJSessionId(HttpServletRequest request ) {
+		String JSESSIONID = null;
+		Cookie[] cookies = request.getCookies();
+		for (int i = 0; i < cookies.length; i++) {
+			if (Constants.CACHE_COOKIE_KEY.equals(cookies[i].getName())) {
+				JSESSIONID = cookies[i].getValue();
+				break;
+			}
+		}
+		if(StringUtils.isBlank(JSESSIONID)) JSESSIONID = request.getSession().getId();
+		return JSESSIONID;
+	}
+
+	/**
+	 * 客户端存储cookie
+	 * @param request
+	 * @param response
+	 * @param JSESSIONID
+	 */
+	private void addCookie(HttpServletRequest request,HttpServletResponse response, String JSESSIONID) {
+		String path = request.getContextPath();
+		try {
+			Cookie cookie = new Cookie(Constants.CACHE_COOKIE_KEY, JSESSIONID); // 保存昵称到cookie
+			cookie.setPath(path + "/");
+			cookie.setMaxAge(Constants.COOKIE_ALIVE);
+			cookie.setSecure(false);
+			response.addCookie(cookie);
+		} catch (Exception e) {
+			LOG.error("存放cookie失败:"+e.getMessage());
+		}
 	}
 
 	@Override

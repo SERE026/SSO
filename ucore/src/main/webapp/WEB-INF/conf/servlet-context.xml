@@ -68,6 +68,11 @@
 	<mvc:interceptors> 
 		<bean class="com.bs.web.interceptor.GlobalInterceptor" />  
 	</mvc:interceptors>
+	
+	<!-- 静态资源的配置 -->
+	<mvc:resources location="/js/" mapping="/js/**"/>
+	<mvc:resources location="/css/" mapping="/css/**"/>
+	<mvc:resources location="/images/" mapping="/images/**"/>
 
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/views/"/>

@@ -10,7 +10,6 @@
 <div class="wrapper">
     <div class="login_main">
         <div class="login_center">
-            <div class="login_center_left">
             <h2>用户登录</h2>
           
                <input  id="nickname" type="text"  class="userInputBox" value="请输入用户名/手机号" 
@@ -19,8 +18,6 @@
                <input  id="pwd" type="password" class="pwdInputBox" />
             
                <input id="loginSubmit" class="su-1"  style="cursor:pointer"  type="button" value="立即登录">
-
-            </div>
         </div>
     </div>
 </div>

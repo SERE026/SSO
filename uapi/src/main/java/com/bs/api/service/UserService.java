@@ -29,7 +29,8 @@ public interface UserService {
 	
 	
 	/**
-	 * 根据key值取用户在缓存中的值
+	 * 根据key值取用户在缓存中的值(目前采用http协议，由于跨域、跨机房)
+	 * 
 	 * @param sessionId
 	 * @return
 	 */
