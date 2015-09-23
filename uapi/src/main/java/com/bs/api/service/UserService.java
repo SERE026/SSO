@@ -5,11 +5,20 @@ import com.bs.api.modle.User;
 public interface UserService {
 
 	/**
-	 * 根据key值取用户在缓存中的值
-	 * @param sessionId
+	 * 根据key值取用户在 缓存  中的值
+	 * query user from Cache by JSESSIONID
+	 * @param jsessionId
 	 * @return
 	 */
-	public User queryUserBySessionId(String sessionId);
+	public User queryUserBySessionId(String jsessionId);
+	
+	/**
+	 * 更具key从关系型数据库中取值
+	 * query user from Relation database by JSESSIONID
+	 * @param jsessionId
+	 * @return
+	 */
+	public User queryUFRelationBySID(String jsessionId);
 	
 	/**
 	 * 保存用户信息 

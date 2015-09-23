@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bs.api.modle.Constants;
 import com.bs.api.modle.User;
 import com.bs.api.service.UserService;
+import com.bs.service.util.JsonObjUtil;
 
 @Controller
 public class LoginController {
@@ -46,13 +47,9 @@ public class LoginController {
 	public String login(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 
-		String uriPrefix = request.getContextPath();
-
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		// String service = request.getParameter("service");
 
-		String service = request.getHeader("Referer");
 		String jsonpCallback = request.getParameter("jsonpCallback");
 
 		String JSESSIONID = request.getParameter("jsessionid");  //此处需要验签
@@ -62,8 +59,8 @@ public class LoginController {
 		 * 1. 此处用户名密码从缓存中获取， 2. 如果缓存中没有从关系型数据库获取
 		 **/
 		User user = null;
-		if (JSESSIONID != null && !"".equals(JSESSIONID))
-			user = userService.queryUserByKey(JSESSIONID); // 1.此处用户名密码从缓存中获取，
+		if (StringUtils.isBlank(JSESSIONID))
+			user = userService.queryUFRelationBySID(JSESSIONID); // 1.此处用户名密码从缓存中获取，
 
 		if (user == null) {
 			user = userService.queryUserByOther(username); // 2.缓存中没有从关系型数据库获取
@@ -76,19 +73,8 @@ public class LoginController {
 			userService.set(user, JSESSIONID);
 			userService.expire(JSESSIONID, Constants.EXPIRETIME);
 
-			/*if (null != service) {
-				 response.sendRedirect(service); //非json模式 
-				 return ;
-			} else {
-				//跳转到用户中心系统 
-				//response.sendRedirect("/index"); //非json模式
-			}*/
 			return jsonpCallback+"("+loginJsonUrl("success",JSESSIONID)+")";
 		} else {
-			/*
-			 * // 直接在登录地址提示错误信息  
-			 * response.sendRedirect(uriPrefix+"/login?"+request.getQueryString()); //非json模式
-			 */
 			return jsonpCallback+"("+loginJsonUrl("error",JSESSIONID)+")";
 		}
 	}
@@ -100,6 +86,30 @@ public class LoginController {
 		
 		return "user/account";
 	}
+	
+	/**
+	 * 查询用户信息，客户端拦截器使用
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	@ResponseBody
+	@RequestMapping("/p/query")
+	public String query(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
+		
+		String jsessionId = request.getParameter(Constants.CACHE_COOKIE_KEY);
+		
+		User user = userService.queryUFRelationBySID(jsessionId);
+		
+		if(user != null) return JsonObjUtil.objToJson(user);
+		else return null;
+	}
+	
+	
+	
 	
 	public String loginJsonUrl(String type,String JSESSIONID){
 		List<String> list = new ArrayList<String>(1);

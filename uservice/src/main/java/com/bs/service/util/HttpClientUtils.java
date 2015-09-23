@@ -2,134 +2,118 @@ package com.bs.service.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-//import javax.servlet.http.Cookie;
-
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.RequestBuilder;
-import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.bs.api.modle.Constants;
+import com.bs.api.modle.User;
  
 public class HttpClientUtils {
- 
-    private static PoolingHttpClientConnectionManager connectionManager = null;
-    private static HttpClientBuilder httpBulder = null;
-    private static RequestConfig requestConfig = null;
- 
-    private static int MAXCONNECTION = 10;
- 
-    private static int DEFAULTMAXCONNECTION = 5;
- 
-//    private static String IP = "cnivi.com.cn";
-    private static String IP = "www.web2.com";
-//    private static int PORT = 80;
-    private static int PORT = 9080;
- 
-    static {
-        //设置http的状态参数
-        requestConfig = RequestConfig.custom()
-                .setSocketTimeout(5000)
-                .setConnectTimeout(5000)
-                .setConnectionRequestTimeout(5000)
-                .build();
- 
-        HttpHost target = new HttpHost(IP, PORT);
-        connectionManager = new PoolingHttpClientConnectionManager();
-        connectionManager.setMaxTotal(MAXCONNECTION);
-        connectionManager.setDefaultMaxPerRoute(DEFAULTMAXCONNECTION);
-        connectionManager.setMaxPerRoute(new HttpRoute(target), 20);
-        httpBulder = HttpClients.custom();
-        httpBulder.setConnectionManager(connectionManager);
-    }
- 
-    public static CloseableHttpClient getConnection() {
-        CloseableHttpClient httpClient = httpBulder.build();
-        httpClient = httpBulder.build();
-        return httpClient;
-    }
- 
- 
-    public static HttpUriRequest getRequestMethod(Map<String, String> map, String url, String method) {
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        Set<Map.Entry<String, String>> entrySet = map.entrySet();
-        for (Map.Entry<String, String> e : entrySet) {
-            String name = e.getKey();
-            String value = e.getValue();
-            NameValuePair pair = new BasicNameValuePair(name, value);
-            params.add(pair);
-        }
-        HttpUriRequest reqMethod = null;
-        if ("post".equals(method)) {
-            reqMethod = RequestBuilder.post().setUri(url)
-                    .addParameters(params.toArray(new BasicNameValuePair[params.size()]))
-                    .setConfig(requestConfig).build();
-        } else if ("get".equals(method)) {
-            reqMethod = RequestBuilder.get().setUri(url)
-                    .addParameters(params.toArray(new BasicNameValuePair[params.size()]))
-                    .setConfig(requestConfig).build();
-        }
-        return reqMethod;
-    }
+	
+	private static Logger LOG = LoggerFactory.getLogger(HttpClientUtils.class);
+	
+	
+	private static HttpClientUtils httpClientUtils = new HttpClientUtils();
+	
+	
+	public static synchronized HttpClientUtils getInstance(){
+		return httpClientUtils;
+	}
+	
+	
+	/**
+	 * 查询用户是否已经登录，通过sessionid 查询
+	 * @param jsessionId
+	 * @return
+	 */
+	public User isLogin(String jsessionId){
+		try{
+			// 创建默认的httpClient实例.    
+	        HttpClient client = HttpClients.createDefault();  
+	        // 创建httppost    
+	        HttpPost httppost = new HttpPost(Global.getConfig(Constants.SSO_URL_QUERY));  
+	        // 创建参数队列    
+	        List<NameValuePair> formparams = new ArrayList<NameValuePair>();  
+	        formparams.add(new BasicNameValuePair(Constants.CACHE_COOKIE_KEY, jsessionId));  
+	        
+	        UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(formparams, "UTF-8"); 
+	        
+	        httppost.setEntity(uefEntity);  
+	          
+	        HttpResponse response = client.execute(httppost);  
+	        HttpEntity entity = response.getEntity();  
+	        User user = null;
+	        if (entity != null) {  
+	            LOG.info("--------------------------------------");  
+	            user = (User) JsonObjUtil.stringToObj(EntityUtils.toString(entity, "UTF-8"), User.class);
+	            LOG.info("Login Response content: " + ToStringBuilder.reflectionToString(user,ToStringStyle.MULTI_LINE_STYLE)); 
+	            LOG.info("--------------------------------------");  
+	        }
+	        return user;
+		}catch(Exception e){
+			LOG.error("查询用户信息异常: "+e.getMessage());
+			return null;
+		}
+	}
+	
+	
+	 /**
+	  * post方式提交 （模拟用户登录请求）   
+	  * @param username
+	  * @param pwd
+	  * @param imgCode
+	  * @return
+	  */
+    public Object postLogin(String username,String pwd,String imgCode) {
+    	try {
+	        // 创建默认的httpClient实例.    
+	        HttpClient client = HttpClients.createDefault();  
+	        // 创建httppost    
+	        HttpPost httppost = new HttpPost(Global.getConfig(Constants.SSO_URL_LOGIN));  
+	        // 创建参数队列    
+	        List<NameValuePair> formparams = new ArrayList<NameValuePair>();  
+	        formparams.add(new BasicNameValuePair("username", username));  
+	        formparams.add(new BasicNameValuePair("password", pwd));  
+	        formparams.add(new BasicNameValuePair("imgcode", imgCode));  
+	        
+	        UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(formparams, "UTF-8"); 
+	        
+            httppost.setEntity(uefEntity);  
+              
+            HttpResponse response = client.execute(httppost);  
+            HttpEntity entity = response.getEntity();  
+            Object result = null;
+            if (entity != null) {  
+                LOG.info("--------------------------------------");  
+                result = EntityUtils.toString(entity, "UTF-8");
+                LOG.info("Login Response content: " + ToStringBuilder.reflectionToString(result,ToStringStyle.MULTI_LINE_STYLE)); 
+                LOG.info("--------------------------------------");  
+            }
+            return result;
+        } catch (IOException e) { 
+        	LOG.error("执行登录异常：{}"+e.getMessage());
+        	return null;
+        } 
+        
+    }  
  
     
-    public static HttpUriRequest getRequestMethod1(Map<String, String> map, String url, String method) {
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        Set<Map.Entry<String, String>> entrySet = map.entrySet();
-        for (Map.Entry<String, String> e : entrySet) {
-            String name = e.getKey();
-            String value = e.getValue();
-            NameValuePair pair = new BasicNameValuePair(name, value);
-            params.add(pair);
-        }
-        HttpUriRequest reqMethod = null;
-        if ("post".equals(method)) {
-            reqMethod = RequestBuilder.post().setUri(url)
-                    /*.addParameters(params.toArray(new BasicNameValuePair[params.size()]))*/
-                    .setConfig(requestConfig).build();
-        } else if ("get".equals(method)) {
-            reqMethod = RequestBuilder.get().setUri(url)
-                    /*.addParameters(params.toArray(new BasicNameValuePair[params.size()]))*/
-                    .setConfig(requestConfig).build();
-        }
-//        Cookie cookie = new Cookie(Constants.JVMCACHE_KEY,  map.get(Constants.JVMCACHE_KEY));
-        reqMethod.addHeader(new BasicHeader("Set-Cookie",map.get(Constants.CACHE_COOKIE_KEY)));
-//        reqMethod.setHeader(Constants.JVMCACHE_KEY, map.get(Constants.JVMCACHE_KEY));
-        return reqMethod;
-    }
+    
+    
+    
     public static void main(String args[]) throws IOException {
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("account", "");
-        map.put("password", "");
- 
-        HttpClient client = getConnection();
-        HttpUriRequest post = getRequestMethod(map, "http://cnivi.com.cn/login.html", "post");
-        HttpResponse response = client.execute(post);
- 
-        if (response.getStatusLine().getStatusCode() == 200) {
-            HttpEntity entity = response.getEntity();
-            String message = EntityUtils.toString(entity, "utf-8");
-            System.out.println(message);
-        } else {
-            System.out.println("请求失败");
-        }
     }
 }

@@ -4,6 +4,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.Manager;
+import org.apache.catalina.session.ManagerBase;
+import org.apache.catalina.session.StandardManager;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,9 +39,7 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 		
 		if(StringUtils.isBlank(JSESSIONID))  JSESSIONID = getJSessionId(request);
 		
-		//客户端存储cookie
-		addCookie(request,response,JSESSIONID);
-				
+//		new StandardManager().changeSessionId(request.getSession());
 		//客户端存储cookie
 		addCookie(request,response,JSESSIONID);
 		

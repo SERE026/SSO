@@ -65,7 +65,7 @@ public class UserServiceTest {
 	
 	@Test
 	public void read1(){
-		User u = userService.queryUserBySessionId("111111");
+		User u = userService.queryUserByKey("111111");
 //		User u = userService.queryUserByKey("222222");
 		if(u!=null)
 		 System.out.println(u.toString());
