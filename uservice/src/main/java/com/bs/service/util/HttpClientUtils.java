@@ -3,7 +3,10 @@ package com.bs.service.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.http.HttpEntity;
@@ -12,13 +15,14 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bs.api.modle.Constants;
+import com.bs.api.modle.UConstants;
 import com.bs.api.modle.User;
  
 public class HttpClientUtils {
@@ -40,14 +44,17 @@ public class HttpClientUtils {
 	 * @return
 	 */
 	public User isLogin(String jsessionId){
+		// 创建默认的httpClient实例.    
+		CloseableHttpClient client = HttpClients.createDefault();  
+		// 创建httppost    
+		HttpPost httppost = new HttpPost(Global.getConfig(UConstants.SSO_URL_QUERY));  
+		
+		
 		try{
-			// 创建默认的httpClient实例.    
-	        HttpClient client = HttpClients.createDefault();  
-	        // 创建httppost    
-	        HttpPost httppost = new HttpPost(Global.getConfig(Constants.SSO_URL_QUERY));  
 	        // 创建参数队列    
 	        List<NameValuePair> formparams = new ArrayList<NameValuePair>();  
-	        formparams.add(new BasicNameValuePair(Constants.CACHE_COOKIE_KEY, jsessionId));  
+	        formparams.add(new BasicNameValuePair(UConstants.CACHE_COOKIE_KEY, jsessionId)); 
+	        formparams.add(new BasicNameValuePair(UConstants.HTTP_FLAG, UConstants.HTTP_FLAG));
 	        
 	        UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(formparams, "UTF-8"); 
 	        
@@ -66,7 +73,53 @@ public class HttpClientUtils {
 		}catch(Exception e){
 			LOG.error("查询用户信息异常: "+e.getMessage());
 			return null;
+		}finally{
+			httppost.releaseConnection();
+			try {
+				client.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+	}
+	
+	
+	public Map<String,String> register(User user){
+		Map<String,String> resMap = new ConcurrentHashMap<String,String>();
+		// 创建默认的httpClient实例.    
+		CloseableHttpClient client = HttpClients.createDefault();  
+		// 创建httppost    
+		HttpPost httppost = new HttpPost(Global.getConfig(UConstants.SSO_URL_QUERY));  
+		try{
+	        // 创建参数队列    
+	        List<NameValuePair> formparams = new ArrayList<NameValuePair>();  
+	        formparams.add(new BasicNameValuePair(UConstants.USER_JSON, JsonObjUtil.objToJson(user)));  
+	        
+	        UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(formparams, "UTF-8"); 
+	        
+	        httppost.setEntity(uefEntity);  
+	          
+	        HttpResponse response = client.execute(httppost);  
+	        HttpEntity entity = response.getEntity();  
+	        if (entity != null) {  
+	            LOG.info("--------------------------------------");  
+	            user = (User) JsonObjUtil.stringToObj(EntityUtils.toString(entity, "UTF-8"), User.class);
+	            LOG.info("Login Response content: " + ToStringBuilder.reflectionToString(user,ToStringStyle.MULTI_LINE_STYLE)); 
+	            LOG.info("--------------------------------------");  
+	        }
+		}catch(Exception e){
+			LOG.error("查询用户信息异常: "+e.getMessage());
+			return null;
+		}finally{
+			httppost.releaseConnection();
+			try {
+				client.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return resMap;
 	}
 	
 	
@@ -78,11 +131,11 @@ public class HttpClientUtils {
 	  * @return
 	  */
     public Object postLogin(String username,String pwd,String imgCode) {
+    	// 创建默认的httpClient实例.    
+    	CloseableHttpClient client = HttpClients.createDefault();  
+    	// 创建httppost    
+    	HttpPost httppost = new HttpPost(Global.getConfig(UConstants.SSO_URL_LOGIN));  
     	try {
-	        // 创建默认的httpClient实例.    
-	        HttpClient client = HttpClients.createDefault();  
-	        // 创建httppost    
-	        HttpPost httppost = new HttpPost(Global.getConfig(Constants.SSO_URL_LOGIN));  
 	        // 创建参数队列    
 	        List<NameValuePair> formparams = new ArrayList<NameValuePair>();  
 	        formparams.add(new BasicNameValuePair("username", username));  
@@ -106,7 +159,14 @@ public class HttpClientUtils {
         } catch (IOException e) { 
         	LOG.error("执行登录异常：{}"+e.getMessage());
         	return null;
-        } 
+        } finally{
+			httppost.releaseConnection();
+			try {
+				client.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
         
     }  
  

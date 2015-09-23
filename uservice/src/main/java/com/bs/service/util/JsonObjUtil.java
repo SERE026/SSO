@@ -22,6 +22,10 @@ public class JsonObjUtil {
 	}
 	
 	public static void main(String[] args) {
+		
+		String date = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new java.util.Date(1444378163404L));  
+		System.out.println(date);
+		
 		User u = new User();
 		u.setName("aaaa");
 		u.setPassword("bbbbpwd");

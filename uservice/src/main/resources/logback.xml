@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="true" scanPeriod="30 seconds">
-    <property name="log.dir" value="D:\\workspaceSpring\\logs/"/>
+    <property name="log.dir" value="D://qqd_new_workspace//un_company_maven//logs//"/>
     <property name="encoding" value="UTF-8"/>
     <property name="normal-pattern"
     			   value="%d{yyyy-MM-dd.HH:mm:ss} %-5level %logger{10}.%M:%L  %msg%n"/>

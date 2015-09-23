@@ -27,6 +27,12 @@
   <listener>
       <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
   </listener>
+  
+  <!-- session 处理 -->
+  <listener>
+      <listener-class>com.bs.web.listener.SessionJobListener</listener-class>
+  </listener>
+  
     
    <!--编码过滤器 -->
    <filter>

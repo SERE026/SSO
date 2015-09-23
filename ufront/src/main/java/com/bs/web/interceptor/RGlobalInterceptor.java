@@ -12,15 +12,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bs.api.modle.UConstants;
 import com.bs.api.modle.User;
-import com.bs.api.service.SessionManagerService;
+import com.bs.api.service.UserService;
 import com.bs.service.util.SpringContextHolder;
-import com.bs.web.util.SessionUtil;
 
 
-public class GlobalInterceptor  implements HandlerInterceptor {
+public class RGlobalInterceptor  implements HandlerInterceptor {
 
-	private static Logger LOG = LoggerFactory.getLogger(GlobalInterceptor.class);
-	private SessionManagerService sessionManagerService = SpringContextHolder.getBean(SessionManagerService.class);
+	private static Logger LOG = LoggerFactory.getLogger(RGlobalInterceptor.class);
+	private UserService userService = SpringContextHolder.getBean(UserService.class);
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -33,17 +32,18 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 		String uriPrefix = request.getContextPath();
 		
 		//使用JSESSIONID 来保存会话，模拟tomcat 的session实现
-		String JSESSIONID = SessionUtil.getJSessionId(request);
+		String JSESSIONID = request.getParameter(UConstants.CACHE_COOKIE_KEY);  //此处需要验签
+		
+		if(StringUtils.isBlank(JSESSIONID))  JSESSIONID = getJSessionId(request);
 		
 //		new StandardManager().changeSessionId(request.getSession());
 		//客户端存储cookie
 		addCookie(request,response,JSESSIONID);
 		
 		/**
-		 *  用户中心查询
+		 *  缓存中查询
 		 */
-//		User user = sessionManagerService.queryUserBySID(JSESSIONID);
-		User user = SessionUtil.getUserFromSession(request);
+		User user = userService.queryUserByKey(JSESSIONID);
 		
 		if(uri.equals("/") || StringUtils.startsWith(uri,uriPrefix+"/js/") 
 				|| StringUtils.startsWith(uri,uriPrefix+"/images/")
@@ -51,9 +51,7 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 				|| StringUtils.startsWith(uri,uriPrefix+"/servlet/")
 				|| StringUtils.startsWith(uri,uriPrefix+"/unck/")
 				|| StringUtils.startsWith(uri,uriPrefix+"/login")
-				|| StringUtils.startsWith(uri,uriPrefix+"/index")
 				|| StringUtils.startsWith(uri,uriPrefix+"/p")
-				|| StringUtils.startsWith(uri,uriPrefix+"/setKey")
 				|| StringUtils.startsWith(uri,uriPrefix+"/register"))
 		{
 			LOG.info("不经过拦截器处理的url地址：{}",uri);
@@ -68,9 +66,28 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 			}	
 		}
 		
-		//  更新用户在缓存中的值  考虑到外来系统的接入，采用线程的方式来更新（暂支持java）
-		if(user !=null ) sessionManagerService.expire(JSESSIONID, UConstants.EXPIRETIME);
+		//  更新用户在缓存中的值
+		if(user !=null ) userService.expire(JSESSIONID, UConstants.EXPIRETIME);
 		return true;
+	}
+	
+	
+	/**
+	 * 取cookie中的SessionId
+	 * @param request
+	 * @param JSESSIONID
+	 */
+	private String getJSessionId(HttpServletRequest request ) {
+		String JSESSIONID = null;
+		Cookie[] cookies = request.getCookies();
+		for (int i = 0; i < cookies.length; i++) {
+			if (UConstants.CACHE_COOKIE_KEY.equals(cookies[i].getName())) {
+				JSESSIONID = cookies[i].getValue();
+				break;
+			}
+		}
+		if(StringUtils.isBlank(JSESSIONID)) JSESSIONID = request.getSession().getId();
+		return JSESSIONID;
 	}
 	
 	

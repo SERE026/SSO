@@ -17,10 +17,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bs.api.modle.Constants;
+import com.bs.api.modle.UConstants;
 import com.bs.api.modle.User;
+import com.bs.api.service.SessionManagerService;
 import com.bs.api.service.UserService;
 import com.bs.service.util.JsonObjUtil;
+import com.bs.web.util.SessionUtil;
 
 @Controller
 public class LoginController {
@@ -28,6 +30,28 @@ public class LoginController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private SessionManagerService sessionManagerService;
+	
+	/**
+	 * 设置session
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/setKey")
+	public String index(HttpServletRequest request){
+		String JsessionId =  SessionUtil.getJSessionId(request);
+		
+		User user = SessionUtil.getUserFromSession(request, sessionManagerService, JsessionId);
+		
+		SessionUtil.setAttribute(request, JsessionId, user);
+		
+		String jsonpCallback = request.getParameter("jsonpCallback");
+		
+		return jsonpCallback+"({\"result\":\"ok\"})";
+	}
 
 	@RequestMapping("/login")
 	public String toLogin(HttpServletRequest request, HttpServletResponse response,Model model){
@@ -54,28 +78,27 @@ public class LoginController {
 
 		String JSESSIONID = request.getParameter("jsessionid");  //此处需要验签
 		
-		if(StringUtils.isBlank(JSESSIONID)) JSESSIONID = request.getSession().getId();
-		/***
-		 * 1. 此处用户名密码从缓存中获取， 2. 如果缓存中没有从关系型数据库获取
-		 **/
 		User user = null;
-		if (StringUtils.isBlank(JSESSIONID))
-			user = userService.queryUFRelationBySID(JSESSIONID); // 1.此处用户名密码从缓存中获取，
-
-		if (user == null) {
-			user = userService.queryUserByOther(username); // 2.缓存中没有从关系型数据库获取
+		/***
+		 * 从用户中心的缓存中获取(系统默认启动加载)
+		 **/
+		if (StringUtils.isBlank(JSESSIONID)){
+			JSESSIONID = request.getSession().getId();
 		}
+		user = sessionManagerService.queryUserByUsername(username); 
 
 		if (user != null && user.getName().equals(username)
 				&& user.getPassword().equals(password)) {
 
-			// TODO 此处把用户信息存入缓存 ：redis 或者memcache*/
-			userService.set(user, JSESSIONID);
-			userService.expire(JSESSIONID, Constants.EXPIRETIME);
+			// TODO 此处把用户信息存入用户中心  -->缓存 ：redis 或者memcache 或者mysql */
+			sessionManagerService.saveToUCore(user, JSESSIONID);
+			SessionUtil.setAttribute(request, JSESSIONID, user);
 
 			return jsonpCallback+"("+loginJsonUrl("success",JSESSIONID)+")";
+//			return loginJsonUrl("success",JSESSIONID);
 		} else {
 			return jsonpCallback+"("+loginJsonUrl("error",JSESSIONID)+")";
+//			return loginJsonUrl("error",JSESSIONID);
 		}
 	}
 	
@@ -100,9 +123,9 @@ public class LoginController {
 	public String query(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		
-		String jsessionId = request.getParameter(Constants.CACHE_COOKIE_KEY);
+		String jsessionId = request.getParameter(UConstants.CACHE_COOKIE_KEY);
 		
-		User user = userService.queryUFRelationBySID(jsessionId);
+		User user = userService.queryUserByKey(jsessionId);
 		
 		if(user != null) return JsonObjUtil.objToJson(user);
 		else return null;
@@ -116,8 +139,8 @@ public class LoginController {
 		JSONObject json = new JSONObject();
 		// TODO 此处需要进行加密验签
 		if("success".equals(type)){
-			list.add("http://www.web1.com:9081/index");
-			list.add("http://www.passport.com:9080/index");
+			list.add("http://www.web1.com:9081/setKey");
+			list.add("http://www.passport.com:9080/setKey");
 			json.put("sso", list);
 		}else{
 			json.put("sso", "");

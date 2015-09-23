@@ -10,6 +10,12 @@ var loginUrl = "http://www.passport.com:9080/login/submit";
  * @param pwd 登录密码
  */
 function logins(username,password){
+	 var if_id = "iframeId";
+	 var inner_iframe = $("<div id=\"\""+if_id+"></div>");
+	 $("body").append(inner_iframe);
+	 $("#"+if_id).empty();
+	 
+	 
 	 $.ajax({  
         url:loginUrl,  
         dataType:'jsonp',  
@@ -21,7 +27,8 @@ function logins(username,password){
         success:function(result) {  
         	if (result && result.sso) {
         		$.each(result.sso, function () {
-        			alert(this+"?JSESSIONID_SIGN="+result.jsessionid)
+        			inner_iframe.append("<iframe src="+this.split("/")[0]+" style=\"display:none\"> </iframe> ");
+        			//alert(this+"?JSESSIONID_SIGN="+result.jsessionid)
         			$.ajax({  
         		        url:this+"?JSESSIONID_SIGN="+result.jsessionid,  
         		        dataType:'jsonp',  
