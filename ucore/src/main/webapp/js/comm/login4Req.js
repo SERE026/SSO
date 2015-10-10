@@ -46,5 +46,3 @@ function logins(username,password){
         timeout:3000  
     });  
 }
-
-

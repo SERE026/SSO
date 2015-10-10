@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -77,6 +76,7 @@ public class LoginController {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 
+		String service = request.getHeader("Referer");
 		String jsonpCallback = request.getParameter("jsonpCallback");
 
 		String sign = request.getParameter(UConstants.LOGIN_SIGN);  //此处需要验签
@@ -164,8 +164,6 @@ public class LoginController {
 		if(user != null) return JsonObjUtil.objToJson(user);
 		else return null;
 	}
-	
-	
 	
 	
 	public String loginJsonUrl(String type,String sign,String name){
