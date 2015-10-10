@@ -43,7 +43,7 @@ public class LoginController {
 	 */
 	@ResponseBody
 	@RequestMapping("/setKey")
-	public String index(HttpServletRequest request){
+	public String setKey(HttpServletRequest request){
 		String sign =  request.getParameter(UConstants.LOGIN_SIGN); //验签
 		
 		User user = SessionUtil.getUserFromSession(request, sessionManagerService);

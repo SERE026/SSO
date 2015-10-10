@@ -9,16 +9,16 @@ public interface SessionManagerService {
 	
 	/**
 	 * 移除session
-	 * @param sessionId
+	 * @param key
 	 */
-	public void removeSession(String sessionId);
+	public void removeSession(String key);
 	
 	/**
-	 * 查询用户信息，根据sessionid查询
-	 * @param sessionId
+	 * 查询用户信息，根据key查询
+	 * @param key
 	 * @return
 	 */
-	public User queryUserBySID(String sessionId,String name);
+	public User queryUserBySID(String key,String name);
 	
 	/**
 	 * 查询用户信息，根据用户名称查询 （从用户中心数据库查询）

@@ -37,7 +37,7 @@ public class IndexController {
 	 * 首页测试
 	 */
 	@RequestMapping("/")
-	public String index(HttpServletRequest request,HttpServletResponse response) {
+	public String index(HttpServletRequest request) {
 		Object referer = request.getHeader("Referer");
 		LOG.info("上一个地址来源：{}",referer);
 		return "index";
@@ -45,7 +45,7 @@ public class IndexController {
 
 //	@ResponseBody
 	@RequestMapping("/index")
-	public String index1(HttpServletRequest request,HttpServletResponse response) {
+	public String index(HttpServletRequest request,HttpServletResponse response) {
 		Object referer = request.getHeader("Referer");
 		LOG.info("上一个地址来源：{}",referer);
 		/*String JsessionId =  SessionUtil.getJSessionId(request);

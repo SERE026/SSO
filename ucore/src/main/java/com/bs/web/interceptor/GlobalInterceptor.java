@@ -31,7 +31,6 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 		String uri = request.getRequestURI();
 		String uriPrefix = request.getContextPath();
 		
-//		User user = sessionManagerService.queryUserBySID(JSESSIONID);
 		User user = SessionUtil.getUserFromSession(request);
 		
 		if(uri.equals("/") || StringUtils.startsWith(uri,uriPrefix+"/js/") 
@@ -57,7 +56,6 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 				return false;
 			}
 		}
-//		if(user != null) sessionManagerService.expire(JSESSIONID, UConstants.EXPIRETIME);
 		return true;
 	}
 

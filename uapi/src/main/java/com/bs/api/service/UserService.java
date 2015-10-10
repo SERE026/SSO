@@ -6,20 +6,20 @@ public interface UserService {
 
 	/**
 	 * 根据key值取用户在 缓存  中的值
-	 * query user from Cache by JSESSIONID
-	 * @param jsessionId
+	 * query user from Cache by key
+	 * @param key
 	 * @return
 	 */
-	public User queryUserBySessionId(String jsessionId);
+	public User queryUserBySessionId(String key);
 	
 	/**
 	 * 更具key从关系型数据库中取值
-	 * query user from Relation database by JSESSIONID
-	 * @param jsessionId
+	 * query user from Relation database by key
+	 * @param key
 	 * @param name 用户名
 	 * @return
 	 */
-	public User queryUFRelationBySID(String jsessionId,String name);
+	public User queryUFRelationBySID(String key,String name);
 	
 	/**
 	 * 保存用户信息 

@@ -34,7 +34,6 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 		/**
 		 *  用户中心查询
 		 */
-//		User user = sessionManagerService.queryUserBySID(JSESSIONID);
 		User user = SessionUtil.getUserFromSession(request);
 		
 		if(uri.equals("/") || StringUtils.startsWith(uri,uriPrefix+"/js/") 
@@ -61,8 +60,6 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 			}	
 		}
 		
-		//  更新用户在缓存中的值  考虑到外来系统的接入，采用线程的方式来更新（暂支持java）
-//		if(user !=null ) sessionManagerService.expire(JSESSIONID, UConstants.EXPIRETIME);
 		return true;
 	}
 	

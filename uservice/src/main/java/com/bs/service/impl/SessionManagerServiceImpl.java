@@ -24,14 +24,14 @@ public class SessionManagerServiceImpl implements SessionManagerService {
 	private RedisTemplate<String, User> redisTemplate;
 	
 	@Override
-	public void removeSession(String sessionId) {
+	public void removeSession(String key) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public synchronized User queryUserBySID(String sessionId,String name) {
-		return HttpClientUtils.getInstance().isLogin(sessionId,name);
+	public synchronized User queryUserBySID(String key,String name) {
+		return HttpClientUtils.getInstance().isLogin(key,name);
 	}
 
 	@Override
