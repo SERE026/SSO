@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bs.api.modle.UConstants;
 import com.bs.api.modle.User;
 import com.bs.api.service.SessionManagerService;
 import com.bs.api.service.UserService;
@@ -30,17 +31,19 @@ public class LoginController {
 	 */
 	@ResponseBody
 	@RequestMapping("/setKey")
-	public String index(HttpServletRequest request){
-		String JsessionId =  SessionUtil.getJSessionId(request);
+	public String setKey(HttpServletRequest request){
 		
-		User user = SessionUtil.getUserFromSession(request, sessionManagerService, JsessionId);
+		String sign = request.getParameter(UConstants.LOGIN_SIGN); //TODO
 		
-		SessionUtil.setAttribute(request, JsessionId, user);
+		User user = SessionUtil.getUserFromSession(request, sessionManagerService);
+		
+		SessionUtil.setAttribute(request, UConstants.CACHE_COOKIE_KEY, user);
 		
 		String jsonpCallback = request.getParameter("jsonpCallback");
 		
 		return jsonpCallback+"({\"result\":\"ok\"})";
 	}
+	
 	
 	@RequestMapping("/login")
 	public String login(HttpServletRequest request,HttpServletResponse response,Model model){

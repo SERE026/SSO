@@ -39,11 +39,12 @@ public class HttpClientUtils {
 	
 	
 	/**
-	 * 查询用户是否已经登录，通过sessionid 查询
-	 * @param jsessionId
+	 * 查询用户是否已经登录，通过name生成key 查询
+	 * @param sign 验签
+	 * @param name 
 	 * @return
 	 */
-	public User isLogin(String jsessionId){
+	public User isLogin(String sign,String name){
 		// 创建默认的httpClient实例.    
 		CloseableHttpClient client = HttpClients.createDefault();  
 		// 创建httppost    
@@ -53,8 +54,8 @@ public class HttpClientUtils {
 		try{
 	        // 创建参数队列    
 	        List<NameValuePair> formparams = new ArrayList<NameValuePair>();  
-	        formparams.add(new BasicNameValuePair(UConstants.CACHE_COOKIE_KEY, jsessionId)); 
-	        formparams.add(new BasicNameValuePair(UConstants.HTTP_FLAG, UConstants.HTTP_FLAG));
+	        formparams.add(new BasicNameValuePair(UConstants.LOGIN_SIGN, sign)); 
+	        formparams.add(new BasicNameValuePair(UConstants.USER_NAME, name));
 	        
 	        UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(formparams, "UTF-8"); 
 	        
@@ -84,12 +85,62 @@ public class HttpClientUtils {
 	}
 	
 	
+	/**
+	 * 更新cache中的有效期
+	 * @param sign
+	 * @param name
+	 * @param time yyyyMMddHHmmssSSS 格式
+	 */
+	public void expireAt(String sign ,String name,String time){
+		// 创建默认的httpClient实例.    
+		CloseableHttpClient client = HttpClients.createDefault();  
+		// 创建httppost    
+		HttpPost httppost = new HttpPost(Global.getConfig(UConstants.SSO_URL_EXPIRE));  
+		
+		
+		try{
+	        // 创建参数队列    
+	        List<NameValuePair> formparams = new ArrayList<NameValuePair>();  
+	        formparams.add(new BasicNameValuePair(UConstants.LOGIN_SIGN, sign)); 
+	        formparams.add(new BasicNameValuePair(UConstants.USER_NAME, name));
+	        formparams.add(new BasicNameValuePair(UConstants.EXPIRE_TIME, time));
+	        
+	        UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(formparams, "UTF-8"); 
+	        
+	        httppost.setEntity(uefEntity);  
+	          
+	        HttpResponse response = client.execute(httppost);  
+	        HttpEntity entity = response.getEntity();  
+	        User user = null;
+	        if (entity != null) {  
+	            LOG.info("--------------------------------------");  
+	            user = (User) JsonObjUtil.stringToObj(EntityUtils.toString(entity, "UTF-8"), User.class);
+	            LOG.info("Login Response content: " + ToStringBuilder.reflectionToString(user,ToStringStyle.MULTI_LINE_STYLE)); 
+	            LOG.info("--------------------------------------");  
+	        }
+		}catch(Exception e){
+			LOG.error("更新cache信息异常: "+e.getMessage());
+		}finally{
+			httppost.releaseConnection();
+			try {
+				client.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * 注册向用户中心同步数据
+	 * @param user
+	 * @return
+	 */
 	public Map<String,String> register(User user){
 		Map<String,String> resMap = new ConcurrentHashMap<String,String>();
 		// 创建默认的httpClient实例.    
 		CloseableHttpClient client = HttpClients.createDefault();  
 		// 创建httppost    
-		HttpPost httppost = new HttpPost(Global.getConfig(UConstants.SSO_URL_QUERY));  
+		HttpPost httppost = new HttpPost(Global.getConfig(UConstants.SSO_URL_REGISTER));  
 		try{
 	        // 创建参数队列    
 	        List<NameValuePair> formparams = new ArrayList<NameValuePair>();  

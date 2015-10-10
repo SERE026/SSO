@@ -1,12 +1,19 @@
 package com.bs.web.listener;
 
+import java.io.IOException;
 import java.util.Timer;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionAttributeListener;
 import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
@@ -27,18 +34,15 @@ public class SessionJobListener extends HttpServlet implements ServletContextLis
 
 	@Override
 	public void contextInitialized(ServletContextEvent e) {
-		// TODO Auto-generated method stub
 		LOG.info("initial context....");  
 		
 		LOG.info("监听器输出的内容：{}",ToStringBuilder.reflectionToString(e.getServletContext().getAttribute(UConstants.CACHE_COOKIE_KEY)));
 		LOG.info("监听器输出的内容：{}",ToStringBuilder.reflectionToString(e.getServletContext().getAttributeNames()));
 		
-		//timer.schedule(new UserOnlineTimerTask(), 0, 10000);  
 	}
 	
 	@Override
 	public void contextDestroyed(ServletContextEvent e) {
-		// TODO Auto-generated method stub
 		LOG.info("destory context....");  
 		  
 		timer.cancel();  
@@ -46,9 +50,9 @@ public class SessionJobListener extends HttpServlet implements ServletContextLis
 
 	@Override
 	public void attributeAdded(HttpSessionBindingEvent e) {
-		LOG.info("CORE监听器输出的内容：{}",e.getSession().getAttribute(e.getSession().getId()));
-		LOG.info("CORE监听器输出的内容：{}",ToStringBuilder.reflectionToString(e.getSession().getAttributeNames()));
-		timer.schedule(new UserOnlineTimerTask(e), 0, 60000); 
+		LOG.info("FRONT_监听器输出的内容：{}",e.getSession().getAttribute(e.getSession().getId()));
+		LOG.info("FRONT_监听器输出的内容：{}",ToStringBuilder.reflectionToString(e.getSession().getAttributeNames()));
+		timer.schedule(new UserOnlineTimerTask(e), 0, 50000); 
 	}
 
 	@Override

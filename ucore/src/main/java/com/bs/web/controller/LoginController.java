@@ -2,6 +2,7 @@ package com.bs.web.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -21,6 +22,7 @@ import com.bs.api.modle.UConstants;
 import com.bs.api.modle.User;
 import com.bs.api.service.SessionManagerService;
 import com.bs.api.service.UserService;
+import com.bs.service.util.DateUtil;
 import com.bs.service.util.JsonObjUtil;
 import com.bs.web.util.SessionUtil;
 
@@ -36,17 +38,18 @@ public class LoginController {
 	
 	/**
 	 * 设置session
+	 * JSONP 调用
 	 * @param request
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping("/setKey")
 	public String index(HttpServletRequest request){
-		String JsessionId =  SessionUtil.getJSessionId(request);
+		String sign =  request.getParameter(UConstants.LOGIN_SIGN); //验签
 		
-		User user = SessionUtil.getUserFromSession(request, sessionManagerService, JsessionId);
+		User user = SessionUtil.getUserFromSession(request, sessionManagerService);
 		
-		SessionUtil.setAttribute(request, JsessionId, user);
+		SessionUtil.setAttribute(request, UConstants.CACHE_COOKIE_KEY, user);
 		
 		String jsonpCallback = request.getParameter("jsonpCallback");
 		
@@ -64,7 +67,7 @@ public class LoginController {
 	
 	/**
 	 * 完全跨域名单点登录
-	 * 
+	 * jsonp 调用
 	 * */
 	@ResponseBody
 	@RequestMapping("/login/submit")
@@ -76,29 +79,23 @@ public class LoginController {
 
 		String jsonpCallback = request.getParameter("jsonpCallback");
 
-		String JSESSIONID = request.getParameter("jsessionid");  //此处需要验签
+		String sign = request.getParameter(UConstants.LOGIN_SIGN);  //此处需要验签
 		
-		User user = null;
-		/***
-		 * 从用户中心的缓存中获取(系统默认启动加载)
-		 **/
-		if (StringUtils.isBlank(JSESSIONID)){
-			JSESSIONID = request.getSession().getId();
-		}
-		user = sessionManagerService.queryUserByUsername(username); 
+		User user = sessionManagerService.queryUserByUsername(username); 
 
 		if (user != null && user.getName().equals(username)
 				&& user.getPassword().equals(password)) {
 
 			// TODO 此处把用户信息存入用户中心  -->缓存 ：redis 或者memcache 或者mysql */
-			sessionManagerService.saveToUCore(user, JSESSIONID);
-			SessionUtil.setAttribute(request, JSESSIONID, user);
+			// 生成key的规则(待定)
+			String key = UConstants.CACHE_COOKIE_KEY+username; 
+			sessionManagerService.saveToUCore(user, key);
+			//放入session
+			SessionUtil.setAttribute(request, UConstants.CACHE_COOKIE_KEY, user);
 
-			return jsonpCallback+"("+loginJsonUrl("success",JSESSIONID)+")";
-//			return loginJsonUrl("success",JSESSIONID);
+			return jsonpCallback+"("+loginJsonUrl("success",sign,username)+")";
 		} else {
-			return jsonpCallback+"("+loginJsonUrl("error",JSESSIONID)+")";
-//			return loginJsonUrl("error",JSESSIONID);
+			return jsonpCallback+"("+loginJsonUrl("error",sign,username)+")";
 		}
 	}
 	
@@ -106,8 +103,38 @@ public class LoginController {
 	@RequestMapping("/account")
 	public String account(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		
+		/*try {
+		 Field requestField;
+			requestField = request.getClass().getDeclaredField("request");
+			requestField.setAccessible(true);
+			Request req = (Request) requestField.get(request);
+			org.apache.catalina.Context context = req.getContext();
+			Manager manager = context.getManager();
+			//activeSessions = manager.getActiveSessions();
+			
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} */
 		return "user/account";
+	}
+	
+	/**
+	 * 服务端和客户端监听器中的调用
+	 * 更新cache用户信息
+	 * @param request
+	 */
+	@ResponseBody
+	@RequestMapping("/expire")
+	public void expire(HttpServletRequest request){
+		
+		String name = request.getParameter(UConstants.USER_NAME);
+		String dt = request.getParameter(UConstants.EXPIRE_TIME);
+		
+		Date time = DateUtil.parseDate(dt);
+		String key = UConstants.CACHE_COOKIE_KEY+name;
+		sessionManagerService.expireAt(key, time);
+		
 	}
 	
 	/**
@@ -123,9 +150,16 @@ public class LoginController {
 	public String query(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		
-		String jsessionId = request.getParameter(UConstants.CACHE_COOKIE_KEY);
+		//TODO 验签(未完成)
+		String sign = request.getParameter(UConstants.LOGIN_SIGN);
 		
-		User user = userService.queryUserByKey(jsessionId);
+		
+		String name = request.getParameter(UConstants.USER_NAME);
+		
+		//生成key的规则 (待定)
+		String key = UConstants.CACHE_COOKIE_KEY+name;
+		
+		User user = userService.queryUserByKey(key);
 		
 		if(user != null) return JsonObjUtil.objToJson(user);
 		else return null;
@@ -134,7 +168,7 @@ public class LoginController {
 	
 	
 	
-	public String loginJsonUrl(String type,String JSESSIONID){
+	public String loginJsonUrl(String type,String sign,String name){
 		List<String> list = new ArrayList<String>(1);
 		JSONObject json = new JSONObject();
 		// TODO 此处需要进行加密验签
@@ -145,7 +179,8 @@ public class LoginController {
 		}else{
 			json.put("sso", "");
 		}
-		json.put("jsessionid", JSESSIONID);
+		json.put(UConstants.LOGIN_SIGN, sign);
+		json.put(UConstants.USER_NAME, name);
 		return json.toString();
 	}
 	

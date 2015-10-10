@@ -1,6 +1,5 @@
 package com.bs.web.interceptor;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bs.api.modle.UConstants;
 import com.bs.api.modle.User;
 import com.bs.api.service.SessionManagerService;
 import com.bs.service.util.SpringContextHolder;
@@ -32,12 +30,6 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 		String uri = request.getRequestURI();
 		String uriPrefix = request.getContextPath();
 		
-		//使用JSESSIONID 来保存会话，模拟tomcat 的session实现
-		String JSESSIONID = SessionUtil.getJSessionId(request);
-		
-//		new StandardManager().changeSessionId(request.getSession());
-		//客户端存储cookie
-		addCookie(request,response,JSESSIONID);
 		
 		/**
 		 *  用户中心查询
@@ -54,6 +46,7 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 				|| StringUtils.startsWith(uri,uriPrefix+"/index")
 				|| StringUtils.startsWith(uri,uriPrefix+"/p")
 				|| StringUtils.startsWith(uri,uriPrefix+"/setKey")
+				|| StringUtils.startsWith(uri,uriPrefix+"/expire")
 				|| StringUtils.startsWith(uri,uriPrefix+"/register"))
 		{
 			LOG.info("不经过拦截器处理的url地址：{}",uri);
@@ -69,30 +62,9 @@ public class GlobalInterceptor  implements HandlerInterceptor {
 		}
 		
 		//  更新用户在缓存中的值  考虑到外来系统的接入，采用线程的方式来更新（暂支持java）
-		if(user !=null ) sessionManagerService.expire(JSESSIONID, UConstants.EXPIRETIME);
+//		if(user !=null ) sessionManagerService.expire(JSESSIONID, UConstants.EXPIRETIME);
 		return true;
 	}
-	
-	
-	/**
-	 * 客户端存储cookie
-	 * @param request
-	 * @param response
-	 * @param JSESSIONID
-	 */
-	private void addCookie(HttpServletRequest request,HttpServletResponse response, String JSESSIONID) {
-		String path = request.getContextPath();
-		try {
-			Cookie cookie = new Cookie(UConstants.CACHE_COOKIE_KEY, JSESSIONID); // 保存昵称到cookie
-			cookie.setPath(path + "/");
-			cookie.setMaxAge(UConstants.COOKIE_ALIVE);
-			cookie.setSecure(false);
-			response.addCookie(cookie);
-		} catch (Exception e) {
-			LOG.error("存放cookie失败:"+e.getMessage());
-		}
-	}
-	
 	
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {

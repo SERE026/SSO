@@ -40,21 +40,28 @@ public class UserOnlineTimerTask extends TimerTask{
 	 */
 	@Override
 	public void run() {
+		// TODO Auto-generated method stub
 		
 		HttpSession session = event.getSession();
-		LOG.info("CORE_UserOnline_s_id的内容：{}",session.getId());
+		
+		LOG.info("FRONT_UserOnline_s_t的内容：{}",session.getLastAccessedTime());
+		LOG.info("FRONT_UserOnline_s_t_m的内容：{}",session.getMaxInactiveInterval());
+		LOG.info("FRONT_UserOnline_s_id的内容：{}",session.getId());
+		
+		
 		User user = (User) session.getAttribute(UConstants.CACHE_COOKIE_KEY);
 		if(user!=null){
 			// 此处可以得到时间戳
-			LOG.info("CORE_UserOnline_s_t的内容：{}",session.getLastAccessedTime());
-			LOG.info("CORE_UserOnline_s_t_m的内容：{}",session.getMaxInactiveInterval());
-			LOG.info("CORE_UserOnline_s_v的内容：{}",user.toString());
+			LOG.info("FRONT_UserOnline_s_v的内容：{}",user.toString());
+			//sessionManagerService.queryUserBySID(UConstants.CACHE_COOKIE_KEY,user.getName());
 			
-			//更新 cache的信息
 			String key = UConstants.CACHE_COOKIE_KEY + user.getName();
-			sessionManagerService.expire(key, session.getLastAccessedTime());
+			
+			sessionManagerService.expireAt(key, session.getLastAccessedTime());
 		}
 		
+		
+		//sessionManagerService.expire(event.getSession().get, time);
 	}
 
 

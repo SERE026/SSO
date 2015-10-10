@@ -1,5 +1,7 @@
 package com.bs.api.service;
 
+import java.util.Date;
+
 import com.bs.api.modle.User;
 
 public interface SessionManagerService {
@@ -16,7 +18,7 @@ public interface SessionManagerService {
 	 * @param sessionId
 	 * @return
 	 */
-	public User queryUserBySID(String sessionId);
+	public User queryUserBySID(String sessionId,String name);
 	
 	/**
 	 * 查询用户信息，根据用户名称查询 （从用户中心数据库查询）
@@ -52,5 +54,20 @@ public interface SessionManagerService {
 	 * @param time
 	 */
 	public void expire(String key, Long time);
+	
+
+	/**
+	 * 更新存活时间
+	 * @param key
+	 * @param time
+	 */
+	public void expireAt(String key, Date time);
+	
+	/**
+	 * 更新存活时间
+	 * @param key
+	 * @param time
+	 */
+	public void expireAt(String key, Long time);
 	
 }

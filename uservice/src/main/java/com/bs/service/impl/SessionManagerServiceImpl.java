@@ -1,6 +1,5 @@
 package com.bs.service.impl;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bs.api.modle.UConstants;
 import com.bs.api.modle.User;
 import com.bs.api.service.SessionManagerService;
+import com.bs.service.util.DateUtil;
 import com.bs.service.util.HttpClientUtils;
 
 
@@ -30,26 +30,13 @@ public class SessionManagerServiceImpl implements SessionManagerService {
 	}
 
 	@Override
-	public User queryUserBySID(String sessionId) {
-		return HttpClientUtils.getInstance().isLogin(sessionId);
+	public synchronized User queryUserBySID(String sessionId,String name) {
+		return HttpClientUtils.getInstance().isLogin(sessionId,name);
 	}
 
 	@Override
 	public void expire(String key, Long time) {
 		redisTemplate.expire(key, time, TimeUnit.SECONDS);
-//		redisTemplate.expireAt(key, fmtDate(time));
-	}
-
-	private Date fmtDate(Long time) {
-		String date = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new java.util.Date(time));
-		Date d = null;
-		try {
-			d = new java.text.SimpleDateFormat().parse(date);
-		} catch (ParseException e) {
-			d = new Date();
-			e.getMessage();
-		}
-		return d;
 	}
 
 	@Override
@@ -72,9 +59,18 @@ public class SessionManagerServiceImpl implements SessionManagerService {
 
 	@Override
 	public void saveToUCore(User user,String key) {
-		// TODO Auto-generated method stub
 		redisTemplate.opsForValue().set(key, user);
 		redisTemplate.expire(key, UConstants.EXPIRETIME, TimeUnit.SECONDS);
+	}
+
+	@Override
+	public void expireAt(String key, Date time) {
+		redisTemplate.expireAt(key, time);
+	}
+
+	@Override
+	public void expireAt(String key, Long time) {
+		redisTemplate.expireAt(key, DateUtil.parseDate(time));
 	}
 
 }

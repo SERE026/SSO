@@ -16,9 +16,10 @@ public interface UserService {
 	 * 更具key从关系型数据库中取值
 	 * query user from Relation database by JSESSIONID
 	 * @param jsessionId
+	 * @param name 用户名
 	 * @return
 	 */
-	public User queryUFRelationBySID(String jsessionId);
+	public User queryUFRelationBySID(String jsessionId,String name);
 	
 	/**
 	 * 保存用户信息 
