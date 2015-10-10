@@ -28,9 +28,9 @@ function logins(username,password){
         		
         		$.each(result.sso, function () {
         			inner_iframe.append("<iframe src="+this.split("/")[0]+" style=\"display:none\"> </iframe> ");
-        			//alert(this+"?JSESSIONID_SIGN="+result.jsessionid)
+        			console.log(this+"?sign="+result.sign+"&user_name="+result.user_name)
         			$.ajax({  
-        		        url:this+"?JSESSIONID_SIGN="+result.jsessionid,  
+        		        url:this+"?sign="+result.sign+"&user_name="+result.user_name,  
         		        dataType:'jsonp',  
         		        jsonp:"jsonpCallback",
         		        success:function(result) {  
