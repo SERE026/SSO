@@ -1,6 +1,5 @@
 package com.bs.service.impl;
 
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,28 +13,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bs.api.modle.User;
 import com.bs.api.service.UserService;
+import com.bs.service.util.HttpClientUtils;
 import com.bs.service.util.JsonObjUtil;
 
 @Service("com.bs.api.service.UserService")
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor=Exception.class)
 public class UserServiceImpl implements UserService{
 	
-//	@Autowired
-//	private RedisTemplate<Serializable, Serializable> redisTemplate;
 	
 	@Autowired
 	private RedisTemplate<String, User> redisTemplate;
 
 	@Override
-	public User queryUserBySessionId(final String sessionId) {
+	public User queryUserBySessionId(final String key) {
 		
 		User userOut = redisTemplate.execute(new RedisCallback<User>() {
 
 			@Override
 			public User doInRedis(RedisConnection connection)
 					throws DataAccessException {
-				byte[] key = redisTemplate.getStringSerializer().serialize(sessionId);  
-				byte[] value = connection.get(key);
+				byte[] s_key = redisTemplate.getStringSerializer().serialize(key);  
+				byte[] value = connection.get(s_key);
 				String jsonUser = (String) redisTemplate.getStringSerializer().deserialize(value);
 				User user = (User) JsonObjUtil.stringToObj(jsonUser, User.class);
 				
@@ -45,6 +43,7 @@ public class UserServiceImpl implements UserService{
 		});
 		return userOut;
 	}
+	
 
 	@Override
 	public void save(User user, final String key) {
@@ -85,6 +84,11 @@ public class UserServiceImpl implements UserService{
 		if(obj!=null) user = (User)obj;
 		return user;
 	}
+	
+	@Override
+	public User queryUFRelationBySID(String key,String name) {
+		return HttpClientUtils.getInstance().isLogin(key,name);
+	}
 
 	@Override
 	public void set(User user, String key) {
@@ -106,5 +110,7 @@ public class UserServiceImpl implements UserService{
 		// TODO Auto-generated method stub
 		return new User("cloud","clouod",20,1,"JUST DO IT","ALIBABA");
 	}
+
+	
 
 }
