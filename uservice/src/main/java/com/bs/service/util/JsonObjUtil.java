@@ -2,7 +2,7 @@ package com.bs.service.util;
 
 import net.sf.json.JSONObject;
 
-import com.bs.api.modle.User;
+import com.bs.api.model.User;
 
 public class JsonObjUtil {
 	

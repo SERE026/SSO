@@ -138,7 +138,61 @@
 		  <artifactId>log4j-over-slf4j</artifactId>
 		  <version>1.6.2</version>
 		</dependency>
-
+		<!-- httl java 模板引擎 -->
+		<dependency>
+            <groupId>com.github.httl</groupId>
+            <artifactId>httl</artifactId>
+            <version>1.0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.httl</groupId>
+            <artifactId>httl-springmvc</artifactId>
+            <version>1.0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.httl</groupId>
+            <artifactId>httl-script</artifactId>
+            <version>1.0.11</version>
+        </dependency>
+        <dependency>
+		    <groupId>org.javassist</groupId>
+		    <artifactId>javassist</artifactId>
+		    <version>3.15.0-GA</version>
+		</dependency>
+		
+        <!--
+        <dependency>
+            <groupId>com.github.httl</groupId>
+            <artifactId>httl-servlet</artifactId>
+            <version>1.0.11</version>
+        </dependency>
+       
+        <dependency>
+            <groupId>com.github.httl</groupId>
+            <artifactId>httl-struts</artifactId>
+            <version>1.0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.httl</groupId>
+            <artifactId>httl-webx</artifactId>
+            <version>1.0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.httl</groupId>
+            <artifactId>httl-jfinal</artifactId>
+            <version>1.0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.httl</groupId>
+            <artifactId>httl-nutz</artifactId>
+            <version>1.0.11</version>
+        </dependency>
+        -->
+        <dependency>
+		  <groupId>jstl</groupId>
+		  <artifactId>jstl</artifactId>
+		  <version>1.2</version>
+		</dependency>
     </dependencies>    
   
   <build>

@@ -14,6 +14,12 @@
     <param-value>production</param-value>
   </context-param>
   
+  <!-- httl 页面模板引擎  默认配置 -->
+  <context-param>
+    <param-name>httl.properties</param-name>
+    <param-value>/WEB-INF/conf/httl.properties</param-value>
+  </context-param>
+  
   <!-- 配置 Spring 监听器（加载配置文件）-->
   <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -64,6 +70,10 @@
     <servlet-mapping>
         <servlet-name>DispatcherServlet</servlet-name>
         <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <url-pattern>*.html</url-pattern>
     </servlet-mapping>
   
   <welcome-file-list>

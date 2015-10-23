@@ -9,8 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bs.api.modle.UConstants;
-import com.bs.api.modle.User;
+import com.bs.api.model.UConstants;
+import com.bs.api.model.User;
 import com.bs.api.service.SessionManagerService;
 import com.bs.api.service.UserService;
 import com.bs.web.util.SessionUtil;

@@ -2,7 +2,7 @@ package com.bs.api.service;
 
 import java.util.Date;
 
-import com.bs.api.modle.User;
+import com.bs.api.model.User;
 
 public interface SessionManagerService {
 

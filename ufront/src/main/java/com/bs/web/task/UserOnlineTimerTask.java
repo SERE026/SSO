@@ -9,8 +9,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bs.api.modle.UConstants;
-import com.bs.api.modle.User;
+import com.bs.api.model.UConstants;
+import com.bs.api.model.User;
 import com.bs.api.service.SessionManagerService;
 import com.bs.service.util.SpringContextHolder;
 import com.bs.web.listener.SessionJobListener;

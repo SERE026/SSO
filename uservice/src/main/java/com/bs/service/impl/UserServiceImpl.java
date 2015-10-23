@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bs.api.modle.User;
+import com.bs.api.model.User;
 import com.bs.api.service.UserService;
 import com.bs.service.util.HttpClientUtils;
 import com.bs.service.util.JsonObjUtil;

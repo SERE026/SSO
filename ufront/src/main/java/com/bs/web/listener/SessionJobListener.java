@@ -19,7 +19,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bs.api.modle.UConstants;
+import com.bs.api.model.UConstants;
 import com.bs.web.task.UserOnlineTimerTask;
 
 public class SessionJobListener extends HttpServlet implements ServletContextListener,HttpSessionAttributeListener {

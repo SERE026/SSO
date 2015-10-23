@@ -1,4 +1,4 @@
-package com.bs.api.modle;
+package com.bs.api.model;
 
 
 

@@ -1,0 +1,45 @@
+<!--#set(User user, List<Book> books)-->
+<html>
+    <body>
+     
+        <!--## 定义宏，可当变量或方法执行 -->
+        <!--#macro(cover(Book book))-->
+            <img alt="${book.title}" src="${book.cover}" />
+        <!--#end-->
+         
+        <!--## 条件判断 -->
+        <!--#if(user.role =="admin")-->
+        <table>
+         
+            <!--## 循环输出，类型可省，将基于泛型推导 -->
+            <!--#for(Book book : books)-->
+            <tr>
+                 
+                <!--## 变量输出 -->
+                <td>${book.title}</td>
+                 
+                <!--## 执行宏输出，也可以用${cover} -->
+                <td>$!{cover(book)}</td>
+                 
+                <!--## 变量赋值，类型可省，将基于表达式推导 -->
+                <!--#set(int price = book.price * book.discount)-->
+                <td>${price}</td>
+            </tr>
+             
+            <!--## 条件中断循环 -->
+            <!--#break(for.index == 10)-->
+             
+            <!--## 当循环数据为空时执行 -->
+            <!--#else-->
+                没有数据。
+            <!--#end-->
+         
+        </table>
+        <!--#else(user)-->
+            没有权限。
+        <!--#else-->
+            没有登录。
+        <!--#end-->
+     
+    </body>
+</html>

@@ -20,8 +20,8 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bs.api.modle.UConstants;
-import com.bs.api.modle.User;
+import com.bs.api.model.UConstants;
+import com.bs.api.model.User;
  
 public class HttpClientUtils {
 	

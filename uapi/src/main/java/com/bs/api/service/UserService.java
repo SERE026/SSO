@@ -1,6 +1,6 @@
 package com.bs.api.service;
 
-import com.bs.api.modle.User;
+import com.bs.api.model.User;
 
 public interface UserService {
 

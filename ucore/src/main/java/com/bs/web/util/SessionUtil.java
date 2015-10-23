@@ -3,8 +3,8 @@ package com.bs.web.util;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.bs.api.modle.UConstants;
-import com.bs.api.modle.User;
+import com.bs.api.model.UConstants;
+import com.bs.api.model.User;
 import com.bs.api.service.SessionManagerService;
 
 public class SessionUtil {

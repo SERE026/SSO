@@ -73,7 +73,36 @@
 	<mvc:resources location="/js/" mapping="/js/**"/>
 	<mvc:resources location="/css/" mapping="/css/**"/>
 	<mvc:resources location="/images/" mapping="/images/**"/>
-
+	
+	 <!-- i18n国际化开始 -->
+    <!-- 默认语言设置为英文. 更改语言加参数 ?lang=en -->
+    <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="lang"></property>
+        </bean>
+    </mvc:interceptors>
+	<!-- 基于cookie的国际化 -->
+    <bean id="localeResolver"  class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <property name="defaultLocale" value="en"/>
+    </bean>
+    <!-- 基于session 的国际化 -->
+    <!-- <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+   		<property name="defaultLocale" value="zh_CN"></property>
+ 	</bean> -->
+	 
+    <bean id="messageSource"   class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="classpath:i18n/messages" />
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+    <!-- i18n国际化结束 -->
+	
+	
+	<!-- httl 视图解析器 -->
+	<bean id="httlViewResolver" class="httl.web.springmvc.HttlViewResolver">
+        <property name="contentType" value="text/html; charset=UTF-8"/>
+    </bean>
+	
+	<!-- springmvc 视图解析器 -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/views/"/>
 		<property name="suffix" value=".jsp"/>

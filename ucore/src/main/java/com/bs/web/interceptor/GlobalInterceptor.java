@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bs.api.modle.User;
+import com.bs.api.model.User;
 import com.bs.api.service.SessionManagerService;
 import com.bs.service.util.SpringContextHolder;
 import com.bs.web.util.SessionUtil;

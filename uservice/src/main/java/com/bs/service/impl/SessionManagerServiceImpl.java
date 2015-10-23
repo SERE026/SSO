@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bs.api.modle.UConstants;
-import com.bs.api.modle.User;
+import com.bs.api.model.UConstants;
+import com.bs.api.model.User;
 import com.bs.api.service.SessionManagerService;
 import com.bs.service.util.DateUtil;
 import com.bs.service.util.HttpClientUtils;
