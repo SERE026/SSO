@@ -1,5 +1,6 @@
 package com.bs.web.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,8 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bs.api.service.SessionManagerService;
+import com.bs.service.util.JsonObjUtil;
 
 @Controller
 public class IndexController {
@@ -47,6 +50,18 @@ public class IndexController {
 	@RequestMapping("/")
 	public String index(HttpServletRequest request){
 		return "index";
+	}
+	
+	/**
+	 * 测试httl
+	 */
+	@ResponseBody
+	@RequestMapping("/p/getManTime")
+	public String getManTime(HttpServletRequest request,HttpServletResponse response){
+		Map map = new HashMap();
+		map.put("manTime", 1111111111);
+		map.put("userCount", 222222222);
+		return JsonObjUtil.objToJson(map);
 	}
 	
 }

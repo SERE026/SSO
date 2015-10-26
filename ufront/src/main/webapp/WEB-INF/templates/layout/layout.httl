@@ -1,0 +1,14 @@
+#*这是head*#
+<!--#macro($!head)-->
+${include("/comm/header.httl")}
+<!--#end-->
+
+#*这是body*#
+<!--#macro($!body)-->
+
+<!--#end-->
+
+#*这是foot*#
+<!--#macro($!foot)-->
+${include("/comm/footer.httl")}
+<!--#end-->

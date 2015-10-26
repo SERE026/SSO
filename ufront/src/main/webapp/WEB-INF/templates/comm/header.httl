@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/header.css"/>
+   
+</head>
+<body>
+<div class="topBg">
+    <div class="headerw1200">
+        <div class="topLeft">
+            <p class="hotLine">咨询热线：400-000-0000</p>
+        </div>
+        <div class="topRight">
+
+            <div class="sayHello">
+                <span><img src="/images/qdbheart.png" style="margin-top:10px;"/></span>
+                <span>欢迎</span>
+                <span><a href="/user/account"></a></span>
+                 <span><a href="/user/account"><img src="/images/qdbdlimg.png" style="margin-top:5px;float:left;margin-left:15px;"/>个人中心</a></span>
+                <span>|</span>
+                <span><a id="logout">退出</a></span>
+            </div>
+
+            <div class="routineLog">
+                <a href="/login" class="login"><img src="/images/qdbdlimg.png"  style="float:left;margin-top:5px;margin-right:5px;"/>登录</a>
+                <a href="/register"   class="reg">快速注册</a>
+            </div>
+
+        </div>
+    </div>
+
+</div><!--topBg-->
+<div class="navBigBg">
+    <div class="navBg">
+        <div class="headerw1200">
+             <a href="/"  target="_blank" style="height:95px;width:152px;position:absolute;"></a>
+            <a href="/" class="logo"><img src="/images/qdblogoimg.gif" alt=""/></a>
+            <div class="navBgcenter">
+                <ul>
+                    <li><img src="/images/qdbgzimg.png" alt=""/></li>
+                    <li>100%公正透明</li>
+                </ul>
+                <ul>
+                    <li><img src="/images/qdbzpimg.png" alt=""/></li>
+                    <li>100%正品保障</li>
+
+                </ul>
+                <ul>
+                    <li><img src="/images/qdbmfimg.png" alt=""/></li>
+                    <li>全场免运费</li>
+                </ul>
+                <span>|</span>
+                <div>
+                </div>
+                
+            </div>
+            <div style="float:left;">
+                        <h2 style="font-size:14px;color:#000;margin-top:34px;">累计参与&nbsp;&nbsp;<strong id="manTime" style="font-size:15px;color:#f27519;font-weight:600;"></strong>&nbsp;&nbsp;人次</h2>
+                        <h2 style="font-size:14px;color:#000;">累计注册&nbsp;&nbsp;<strong  id="userCount" style="font-size:15px;color:#f27519;font-weight:600;"></strong>&nbsp;&nbsp;人次</h2>
+            </div>
+            <div class="navBgright">
+                <span>注册码</span>
+                <p><img src="/images/qdbregimg.png" alt="" style="width: 92px;height: 91px;"/></p>
+            </div>
+
+        </div>
+
+    </div><!--navBg-->
+    <div class="nav">
+        <div class="w1org">
+            <ul class="ullis">
+                <li><a href="/" class="hover">首页</a></li>
+                <li><a href="/">最新揭晓</a></li>
+                <li><a href="/">用户晒单</a></li>
+                <li class="position"><a href="#" target="_blank">我要投资</a><img src="/images/touziimg_03.png" /></li>
+                <li><a href="/">关于我们</a></li>
+            </ul>
+            <div class="gonglue">
+                <a href="/">趣夺宝攻略>></a>
+
+            </div>
+
+        </div>
+    </div><!--nav-->
+</div>
+<!--右側 悬浮菜单 -->
+<div class="mui-mbar-tabs" >
+	<div class="quick_link_mian">
+		<div class="quick_links_panel">
+			<div id="quick_links" class="quick_links">
+				<li>
+					<a href="#" class="my_qlinks"><i class="setting"></i></a>
+					<div class="ibar_login_box status_login">
+						<div class="avatar_box">
+							<p class="avatar_imgbox"><img src="/images/no-img_mid_.jpg" /></p>
+							<ul class="user_info">
+								<li>用户名：sl19931003</li>
+								<li>级&nbsp;别：普通会员</li>
+							</ul>
+						</div>
+						<div class="login_btnbox">
+							<a href="#" class="login_order">我的订单</a>
+							<a href="#" class="login_favorite">我的收藏</a>
+						</div>
+						<i class="icon_arrow_white"></i>
+					</div>
+				</li>
+				<li id="shopCart">
+					<a href="#" class="message_list" ><i class="message"></i><div class="span">购物车</div><span class="cart_num">0</span></a>
+				</li>
+				<li>
+					<a href="#" class="history_list"><i class="view"></i></a>
+					<div class="mp_tooltip" style=" visibility:hidden;">我的资产<i class="icon_arrow_right_black"></i></div>
+				</li>
+				<li>
+					<a href="#" class="mpbtn_histroy"><i class="zuji"></i></a>
+					<div class="mp_tooltip">我的足迹<i class="icon_arrow_right_black"></i></div>
+				</li>
+				<li>
+					<a href="#" class="mpbtn_wdsc"><i class="wdsc"></i></a>
+					<div class="mp_tooltip">我的收藏<i class="icon_arrow_right_black"></i></div>
+				</li>
+				<li>
+					<a href="#" class="mpbtn_recharge"><i class="chongzhi"></i></a>
+					<div class="mp_tooltip">我要充值<i class="icon_arrow_right_black"></i></div>
+				</li>
+			</div>
+			<div class="quick_toggle">
+				<li>
+					<a href="#"><i class="kfzx"></i></a>
+					<div class="mp_tooltip">客服中心<i class="icon_arrow_right_black"></i></div>
+				</li>
+				<li>
+					<a href="#none"><i class="mpbtn_qrcode"></i></a>
+					<div class="mp_qrcode" style="display:none;"><img src="/images/qdbregimg.png" width="148" height="175" /><i class="icon_arrow_white"></i></div>
+				</li>
+				<li><a href="#top" class="return_top"><i class="top"></i></a></li>
+			</div>
+		</div>
+		<div id="quick_links_pop" class="quick_links_pop hide"></div>
+	</div>
+</div>
+
+
+<div id="reg_tips" class="tiqsBg">
+	<div class="w1000">
+    	<div class="tiqsBgPic">
+            <a href="javascript:;"   target="_self" class="tiqsBgClose" title="点击关闭"></a>
+            <div id="reg_tips_con" class="tiqsBgCon"></div>
+            <a href="javascript:;"   target="_self" class="tiqsBgTrue">确定</a>
+        </div>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript"  src="/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript"  src="/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript"  src="/js/jquery.fancybox.js"></script>
+
+<script type="text/javascript"  src="/js/shopCar/common.js"></script>
+<script type="text/javascript"  src="/js/shopCar/quick_links.js"></script>
+<script type="text/javascript"  src="/js/shopCar/parabola.js"></script>
+<script type="text/javascript">
+	$(".quick_links_panel li").mouseenter(function(){
+		$(this).children(".mp_tooltip").animate({left:-92,queue:true});
+		$(this).children(".mp_tooltip").css("visibility","visible");
+		$(this).children(".ibar_login_box").css("display","block");
+	});
+	$(".quick_links_panel li").mouseleave(function(){
+		$(this).children(".mp_tooltip").css("visibility","hidden");
+		$(this).children(".mp_tooltip").animate({left:-121,queue:true});
+		$(this).children(".ibar_login_box").css("display","none");
+	});
+	$(".quick_toggle li").mouseover(function(){
+		$(this).children(".mp_qrcode").show();
+	});
+	$(".quick_toggle li").mouseleave(function(){
+		$(this).children(".mp_qrcode").hide();
+	});
+	// 元素以及其他一些变量
+	var eleFlyElement = document.querySelector("#flyItem"), eleShopCart = document.querySelector("#shopCart");
+	var numberItem = 0;
+	// 抛物线运动
+	var myParabola = funParabola(eleFlyElement, eleShopCart, {
+		speed: 400, //抛物线速度
+		curvature: 0.0008, //控制抛物线弧度
+		complete: function() {
+			eleFlyElement.style.visibility = "hidden";
+			eleShopCart.querySelector("span").innerHTML = ++numberItem;
+		}
+	});
+	// 绑定点击事件
+	if (eleFlyElement && eleShopCart) {
+		
+		[].slice.call(document.getElementsByClassName("btnCart")).forEach(function(button) {
+			button.addEventListener("click", function(event) {
+				// 滚动大小
+				var scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft || 0,
+				    scrollTop = document.documentElement.scrollTop || document.body.scrollTop || 0;
+				eleFlyElement.style.left = event.clientX + scrollLeft + "px";
+				eleFlyElement.style.top = event.clientY + scrollTop + "px";
+				eleFlyElement.style.visibility = "visible";
+				
+				// 需要重定位
+				myParabola.position().move();			
+			});
+		});
+	}
+</script>    
+<script>
+//测试httl 和ajax 结合使用
+$.ajax({
+	  type:"get", 
+	  url:"/p/getManTime",
+	  cache:false,
+	  data:{ 
+	   },
+	  dataType:"json",
+	  success:function(data){
+		 var manTime = data.manTime;
+		 var userCount = data.userCount;
+			  
+		 $("#manTime").html(manTime);
+		 $("#userCount").html(userCount);
+	  }
+});
+
+function callback(data){
+	 var manTime = data.manTime;
+	 var userCount = data.userCount;
+	  
+	 $("#manTime").html(manTime);
+	 $("#userCount").html(userCount);
+}
+</script>
+</html>

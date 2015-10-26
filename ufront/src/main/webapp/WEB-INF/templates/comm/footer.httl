@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/footer.css"/>
+</head>
+<body>
+<!--footer-->
+<div class="bigfooter">
+<div class="h130">
+    <dl>
+      <dt><img src="/images/fotgz_03.png" style="margin-top:20px;"></dt>
+      <dd>100%公正透明</dd>
+    </dl>
+    <dl>
+      <dt><img src="/images/fotzp_05.png" style="margin-top:20px;"></dt>
+      <dd>100%正品保障</dd>
+    </dl>
+    <dl>
+      <dt><img src="/images/fotmf_07.png" style="margin-top:20px;"></dt>
+      <dd>全场免运费</dd>
+    </dl>
+    <dl>
+      <dt><img src="/images/fotkf_09.png" style="margin-top:20px;"></dt>
+      <dd>用户权益保障</dd>
+    </dl>
+</div>
+<div class="g-footer">
+      <div class="w1190">
+          <div class="g-guide clrfix">
+              <dl>
+                  <dt>了解趣夺宝</dt>
+                  <dd><a target="_blank" href="#?dd=3" >什么是趣夺宝</a></dd>
+                  <dd><a target="_blank" href="#?dd=4" >夺宝号码的生成规则</a></dd>
+                  
+              </dl>
+              <dl>
+                  <dt>支付方式  </dt>
+                  <dd><a target="_blank" href="#?dd=5">趣币兑换支付</a></dd>
+              </dl>
+              <dl>
+                  <dt>奖品配送 </dt>
+                  <dd><a target="_blank" href="#?dd=6">派送时间及费用</a></dd>
+                  <dd><a target="_blank" href="#?dd=7">商品验货与签收</a></dd>
+              </dl>
+              <dl>
+                  <dt>晒单奖励     </dt>
+                  <dd><a target="_blank" href="#?dd=8" >如何晒单</a></dd>
+                  <dd><a target="_blank" href="#?dd=9" >晒单奖励规则</a></dd>
+              </dl>
+              <dl>
+                  <dt>售后服务</dt>
+                  <dd><a target="_blank" href="#?dd=10">退换保障</a></dd>
+                  <dd><a target="_blank" href="#?dd=11" >常见问题</a></dd>
+              </dl>
+          </div>
+  
+         <div class="links">
+            <p class="linksTit">友情链接：</p>
+            <div class="linksCon">
+            	<ul class="linksList">
+                	<li><a target="_blank" href="#">XXXXXX</a></li>
+                </ul>
+            </div>
+           <!--  <a  class="linksMore"></a> -->
+        </div>
+  
+       <div class="ContactUs">
+        	<div class="AboutUs">
+        		<ul class="AboutUsList">
+                	<!-- 
+                	<li><a >关于我们</a></li>
+                    <li><a >帮助中心</a></li>
+                    <li><a >安全保障</a></li>
+                    <li><a >联系我们</a></li>
+                     -->
+                </ul>
+        	</div>
+            <div class="hotLines">
+            	<p class="p1">400-000-0000</p>
+                <p class="p2">客服热线（客服工作时间：早9：00-晚17:00）</p>
+            </div>
+            <div class="netLines">
+            </div>
+        </div>
+      </div>
+  </div>
+  </div>
+</body>
+</html>
