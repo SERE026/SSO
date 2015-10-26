@@ -47,7 +47,6 @@ public class BooksController {
 			}
 		}
 		model.addAttribute("books", lb);
-		model.addAttribute("user", user);
 		return "book/books";
 	}
 

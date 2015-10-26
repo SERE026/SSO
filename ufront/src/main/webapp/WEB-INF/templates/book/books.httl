@@ -1,7 +1,7 @@
 ${extends("/layout/layout.httl")}
 
 <!--#macro(body(List<Book> books))-->
-<!--#set(User user)-->
+<!--#set(User user = session.JSESSIONID_SIGN)-->
 <html>
 <body>
 	<p>HTTL SpringMVC Demo---${user.name}</p>
