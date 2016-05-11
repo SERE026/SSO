@@ -21,10 +21,24 @@
 	
     <bean id="springContextHolder" class="com.bs.service.util.SpringContextHolder" lazy-init="false"/> 
 
-	<!-- <bean id="FuwuResolver" class="com.qunar.fuwu.fuwucore.web.resolver.FuwuResolver" /> -->
 	<!-- 自动搜索非@Controller标注的类，和非拦截器 -->
 	<context:component-scan base-package="com">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 	
+	<!-- 
+	1. 注册 AutowiredAnnotationBeanPostProcessor、CommonAnnotationBeanPostProcessor、PersistenceAnnotationBeanPostProcessor 
+	以及 RequiredAnnotationBeanPostProcessor  这 4 个BeanPostProcessor。
+	2. 目的是能够让spring容器识别注解 ，
+	3. 如果使用 <context:component-scan /> 扫描所有包，则可以不使用此配置 -->
+    <context:annotation-config/>
+    
+    <!-- 开启AOP 模式  
+    　    注意：proxy-target-class属性值决定是基于接口的还是基于类的代理被创建。
+                      如果proxy-target-class 属性值被设置为true，那么基于类的代理将起作用（这时需要cglib库）。
+                      如果proxy-target-class属值被设置为false或者这个属性被省略，那么标准的JDK 基于接口的代理将起作用。
+	           即使你未声明 proxy-target-class="true" ，但运行类没有实现接口，spring也会自动使用CGLIB代理。
+	          高版本spring自动根据运行类选择 JDK 或 CGLIB 代理
+    -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
 </beans>  

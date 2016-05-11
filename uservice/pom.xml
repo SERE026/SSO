@@ -62,6 +62,7 @@
             <groupId>junit</groupId>  
             <artifactId>junit</artifactId>  
         </dependency>
+        <!-- spring  -->
         <dependency>
 	   	  <groupId>org.springframework</groupId>
 		  <artifactId>spring-webmvc</artifactId>
@@ -75,13 +76,15 @@
 		  <artifactId>spring-orm</artifactId>
 		</dependency>
 		<dependency>
-		  <groupId>org.slf4j</groupId>
-		  <artifactId>slf4j-api</artifactId>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-aop</artifactId>
 		</dependency>
 		<dependency>
 		  <groupId>org.springframework.data</groupId>
 		  <artifactId>spring-data-redis</artifactId>
 		</dependency>
+		
+		<!-- redis start-->
 		<dependency>
 		  <groupId>redis.clients</groupId>
 		  <artifactId>jedis</artifactId>
@@ -89,6 +92,41 @@
 		<dependency>
 		  <groupId>org.apache.commons</groupId>
 		  <artifactId>commons-pool2</artifactId>
+		</dependency>
+		<!-- redis end -->
+		
+		<!-- 面向切面AOP start -->
+		<dependency>
+		  <groupId>org.aspectj</groupId>
+		  <artifactId>aspectjrt</artifactId>
+		</dependency>
+		<dependency>
+		  <groupId>org.aspectj</groupId>
+		  <artifactId>aspectjweaver</artifactId>
+		</dependency>
+		
+		<!-- cglib 和cglib-nodep的区别  cglib-nodep包含asm asm和cglib不匹配会出错 -->
+		<dependency>
+		  <groupId>cglib</groupId>
+		  <artifactId>cglib-nodep</artifactId>
+		</dependency>
+		<!--  
+		<dependency>
+		  <groupId>cglib</groupId>
+		  <artifactId>cglib-nodep</artifactId>
+		  <version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+		-->
+		<!-- 面向切面AOP end -->
+		
+		<dependency>
+		  <groupId>org.slf4j</groupId>
+		  <artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
 		  <groupId>org.apache.commons</groupId>
