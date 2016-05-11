@@ -1,5 +1,7 @@
 package com.bs.service;
 
+import java.util.Map;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -26,6 +28,7 @@ public class AspectService {
 
 	 /** 
      * 定义Pointcut，Pointcut的名称 就是simplePointcut，此方法不能有返回值，该方法只是一个标示 
+     * execution(* com.ycm.third.sina.SinaSendUtil.sendRequest(..)) 具体到类方法
      */  
     @Pointcut("execution(* com.bs..*.*(..)) ")  
     public void point() {  
@@ -33,9 +36,10 @@ public class AspectService {
     
     /**
      * 前置通知，放在方法头上。
+     * args 获取执行方法的参数
      */
-    @Before("point()")  
-    public void before(JoinPoint jp) {  
+    @Before("point() && args(map,type)")  
+    public void before(JoinPoint jp,Map map,Integer type) {  
         String className = jp.getThis().toString();  
         String methodName = jp.getSignature().getName(); // 获得方法名  
         LOG.info("位于：" + className + "调用" + methodName + "()方法-开始！");  
@@ -61,10 +65,12 @@ public class AspectService {
     }
     
     /**
-     * 后置【try】通知，放在方法头上，使用returning来引用方法返回值。
+     * 后置【try】通知，放在方法头上，
+     * 使用returning来引用方法返回值。
+     * 
      */
-    @AfterReturning(pointcut = "point()")  
-    public void afterReturning() {  
+    @AfterReturning(pointcut = "point()",returning = "result")  
+    public void afterReturning(JoinPoint jp,Object result) {  
         LOG.info("AOP后处理成功 ");  
     }  
   
